@@ -21,9 +21,19 @@ body {
     background: white;
     padding: 12px 20px;
     margin: 0;
+
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden
     /* border-radius: 28px; */
     /* box-shadow: 0 12px 40px rgba(0,0,0,0.08); */
 }
+
+.header {
+    flex-shrink: 0;
+}
+
 
 .header h1 {
     font-size: 24px;
@@ -48,6 +58,7 @@ body {
 
 .input-section {
     margin-bottom: 0;
+    flex-shrink: 0;
 }
 
 .input-row {
@@ -119,6 +130,7 @@ body {
     border-radius: 16px;
     border: 1px solid #e8edf6;
     display: none;
+    flex-shrink: 0;
 }
 
 .multiplier-section.visible {
@@ -206,6 +218,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .total-area span:first-child {
@@ -227,6 +240,13 @@ body {
     margin-left: 4px;
 }
 
+.history-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Важно для Firefox */
+}
+
 .history-header {
     display: flex;
     justify-content: space-between;
@@ -245,6 +265,21 @@ body {
     display: flex;
     gap: 6px;
     align-items: center;
+}
+
+.history-list {
+    flex: 1;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.history-list::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 .count {
@@ -355,8 +390,9 @@ body {
 .footer-hint {
     font-size: 13px;
     color: #8a9bb2;
-    margin-top: 12px;
     text-align: center;
+    flex-shrink: 0;
+    margin-top: 8px;
 }
 
 @keyframes fadeIn {
