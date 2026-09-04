@@ -140,7 +140,7 @@
         if (last) {
             const w = Math.round(last.width);
             const h = Math.round(last.height);
-            let infoText = `${w}×${h} мм = ${last.area.toFixed(4)} м²`;
+            let infoText = `${w}×${h} мм = ${last.area.toFixed(2)} м²`;
             if (last.isMultiplied && last.multiplier) {
                 infoText = `${w}×${h} мм × ${last.multiplier} = ${last.area.toFixed(2)} м²`;
             }
