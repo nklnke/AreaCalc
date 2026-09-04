@@ -1,0 +1,524 @@
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #f4f6fa;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.app {
+    max-width: 480px;
+    width: 100%;
+    background: white;
+    padding: 12px 20px;
+    margin: 0;
+    /* border-radius: 28px; */
+    /* box-shadow: 0 12px 40px rgba(0,0,0,0.08); */
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #0b1b32;
+}
+
+.subtitle {
+    color: #6c7a8f;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.subtitle span {
+    background: #eef2f7;
+    padding: 2px 12px;
+    border-radius: 30px;
+    font-weight: 500;
+    color: #1d3557;
+}
+
+.input-section {
+    margin-bottom: 0;
+}
+
+.input-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    flex: 1;
+    min-width: 80px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #3d4e66;
+    margin-bottom: 4px;
+}
+
+.input-group label small {
+    font-weight: 400;
+    color: #8a9bb2;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #dce1eb;
+    border-radius: 14px;
+    font-size: 16px;
+    background: #fafcff;
+    transition: 0.2s;
+    outline: none;
+    color: #0b1b32;
+}
+
+.input-group input:focus {
+    border-color: #2d7aff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(45, 122, 255, 0.15);
+}
+
+.btn-add {
+    background: #2d7aff;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 16px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(45, 122, 255, 0.25);
+}
+
+.btn-add:active {
+    transform: scale(0.97);
+    background: #1a5fd9;
+}
+
+.multiplier-section {
+    margin-top: 16px;
+    padding: 16px;
+    background: #f8faff;
+    border-radius: 16px;
+    border: 1px solid #e8edf6;
+    display: none;
+}
+
+.multiplier-section.visible {
+    display: block;
+}
+
+.multiplier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4e66;
+}
+
+.last-item {
+    font-weight: 400;
+    color: #6c7a8f;
+    font-size: 12px;
+}
+
+.multiplier-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.multiplier-buttons button {
+    background: white;
+    border: 1.5px solid #dce1eb;
+    border-radius: 30px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d3557;
+    cursor: pointer;
+    transition: 0.15s;
+    min-width: 48px;
+}
+
+.multiplier-buttons button:active {
+    background: #2d7aff;
+    color: white;
+    border-color: #2d7aff;
+    transform: scale(0.95);
+}
+
+.custom-multiplier {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 4px;
+}
+
+.custom-multiplier input {
+    width: 60px;
+    padding: 8px;
+    border: 1.5px solid #dce1eb;
+    border-radius: 30px;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+    background: white;
+}
+
+.custom-multiplier input:focus {
+    border-color: #2d7aff;
+}
+
+.custom-multiplier button {
+    min-width: 40px;
+    padding: 8px 12px;
+    background: #2d7aff;
+    color: white;
+    border-color: #2d7aff;
+}
+
+.total-area {
+    background: #eef5ff;
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin: 24px 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-area span:first-child {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1d3557;
+}
+
+.total-area .value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0b1b32;
+}
+
+.total-area .value small {
+    font-size: 16px;
+    font-weight: 400;
+    color: #4a628a;
+    margin-left: 4px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 18px 0 12px;
+}
+
+.history-header h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1d3557;
+    margin: 0;
+}
+
+.history-controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.count {
+    font-size: 13px;
+    color: #7a8aa0;
+    background: #eef2f7;
+    padding: 2px 12px;
+    border-radius: 30px;
+}
+
+.btn-clear {
+    background: none;
+    border: none;
+    color: #b0bed0;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 4px 12px;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: 0.15s;
+}
+
+.btn-clear:active {
+    background: #f0f3f9;
+    color: #5d728f;
+}
+
+.history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.history-list li {
+    background: #f8faff;
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e8edf6;
+    animation: fadeIn 0.2s ease;
+}
+
+.history-list li .item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.history-list li .item-dims {
+    font-weight: 500;
+    color: #0b1b32;
+    font-size: 15px;
+}
+
+.history-list li .item-dims .multiplier-badge {
+    color: #2d7aff;
+    font-weight: 600;
+}
+
+.history-list li .item-time {
+    font-size: 12px;
+    color: #889bb2;
+}
+
+.history-list li .item-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.area-badge {
+    font-weight: 600;
+    color: #1d3557;
+    background: #e5ecf9;
+    padding: 4px 14px;
+    border-radius: 40px;
+    font-size: 14px;
+}
+
+.del-btn {
+    background: none;
+    border: none;
+    color: #b0bed0;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: 0.15s;
+    line-height: 1;
+}
+
+.del-btn:active {
+    color: #d13b3b;
+    transform: scale(1.2);
+}
+
+.empty-state {
+    text-align: center;
+    color: #9aabbf;
+    padding: 32px 0 16px;
+    font-size: 15px;
+}
+
+.footer-hint {
+    font-size: 13px;
+    color: #8a9bb2;
+    margin-top: 12px;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0.4; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 420px) {
+    .input-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .input-group {
+        min-width: 100%;
+    }
+    .btn-add {
+        margin-top: 12px;
+    }
+    .multiplier-buttons {
+        gap: 6px;
+    }
+    .multiplier-buttons button {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: 40px;
+    }
+    .app {
+        padding: 16px;
+    }
+}
+
+/* Стили для скроллбара */
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: #eef2f7;
+    border-radius: 3px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: #d0d8e4;
+    border-radius: 3px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #b0bed0;
+}
+
+/* ===== Кастомное модальное окно ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 24px;
+    padding: 32px 40px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.modal-message {
+    font-size: 16px;
+    color: #0b1b32;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.modal-button {
+    background: #2d7aff;
+    border: none;
+    color: white;
+    padding: 10px 40px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    min-width: 100px;
+}
+
+.modal-button:hover {
+    background: #1a5fd9;
+    transform: scale(1.02);
+}
+
+.modal-button:active {
+    transform: scale(0.95);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-20px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+
+/* ===== Убираем полосу прокрутки ===== */
+
+/* Для всех элементов */
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+/* Для Firefox */
+* {
+    scrollbar-width: none;
+}
+
+/* Для Internet Explorer и Edge */
+* {
+    -ms-overflow-style: none;
+}
+
+/* Специально для истории (если хотите убрать только там) */
+.history-list::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+.history-list {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* Если хотите убрать прокрутку полностью и разрешить скролл только колесиком */
+.history-list {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.history-list::-webkit-scrollbar {
+    display: none;
+}
