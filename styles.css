@@ -21,8 +21,7 @@ body {
     background: white;
     padding: 12px 20px;
     margin: 0;
-
-    max-height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden
@@ -214,7 +213,7 @@ body {
     background: #eef5ff;
     border-radius: 20px;
     padding: 18px 20px;
-    margin: 24px 0 20px;
+    margin: 24px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -392,7 +391,7 @@ body {
     color: #8a9bb2;
     text-align: center;
     flex-shrink: 0;
-    margin-top: 8px;
+    margin-top: auto;
 }
 
 @keyframes fadeIn {
