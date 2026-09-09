@@ -144,9 +144,9 @@ area-calculator/
 
 | Платформа | Путь |
 |-----------|------|
-| **Windows** | `%APPDATA%\area-calculator-app\areas_history.json` |
-| **macOS** | `~/Library/Application Support/area-calculator-app/areas_history.json` |
-| **Linux** | `~/.config/area-calculator-app/areas_history.json` |
+| **Windows** | `%APPDATA%/Roaming/area-calculator/areas_history.json` |
+| **macOS** | `~/Library/Application Support/area-calculator/areas_history.json` |
+| **Linux** | `~/.config/area-calculator/areas_history.json` |
 
 ### 📊 Формат данных
 
@@ -200,11 +200,11 @@ area-calculator/
 - **Удалить запись** — нажмите ✕ рядом с записью
 - **Очистить историю** — нажмите ✕ в заголовке истории
 
-<!-- ### 🌓 Смена темы
+### 🌓 Смена темы
 
 - Нажмите кнопку **🌙** или **☀️** в правом верхнем углу
 
---- -->
+---
 
 ## 🛠️ Технологии
 
@@ -261,7 +261,11 @@ npm run build:win
 
 ## 🗓️ История версий
 
-### v1.0.0 (2024)
+### v1.1.0 (09.2026)
+
+- Добавлена тёмная тема
+
+### v1.0.0 (09.2026)
 
 - Первый релиз
 - Базовый функционал: расчёт площади
