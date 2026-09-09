@@ -371,7 +371,69 @@
     }
 
     // ===== ЗАПУСК =====
+    loadTheme(); // Загружаем тему
     await loadData();
     forceActivateInputs();
     setTimeout(() => widthInput.focus(), 100);
 })();
+
+
+const themeToggle = document.getElementById('themeToggle');
+
+    // ===== УПРАВЛЕНИЕ ТЕМОЙ =====
+    
+    // Загрузка сохранённой темы
+    function loadTheme() {
+        try {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeIcon(savedTheme);
+            } else {
+                // Проверяем системную тему
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    updateThemeIcon('dark');
+                }
+            }
+        } catch (e) {
+            console.log('Theme loading error:', e);
+        }
+    }
+
+    // Обновление иконки кнопки
+    function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+            themeToggle.textContent = '☀️';
+            themeToggle.title = 'Переключить на светлую тему';
+        } else {
+            themeToggle.textContent = '🌙';
+            themeToggle.title = 'Переключить на тёмную тему';
+        }
+    }
+
+    // Переключение темы
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    // Слушаем изменение системной темы
+    if (window.matchMedia) {
+        const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+        darkModeMedia.addEventListener('change', (e) => {
+            // Меняем только если пользователь явно не выбрал тему
+            if (!localStorage.getItem('theme')) {
+                const theme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                updateThemeIcon(theme);
+            }
+        });
+    }
+
+    // Добавляем обработчик для кнопки темы
+    themeToggle.addEventListener('click', toggleTheme);
