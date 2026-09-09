@@ -13,7 +13,7 @@
 
 | Светлая тема | Тёмная тема |
 |--------------|-------------|
-| ![Светлая тема](screenshot-light.jpg) | ![Тёмная тема](screenshot-jpg.png) |
+| ![Светлая тема](screenshot-light.jpg) | ![Тёмная тема](screenshot-dark.jpg) |
 
 ---
 
