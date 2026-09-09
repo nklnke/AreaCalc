@@ -1,7 +1,7 @@
 {
   "name": "area-calculator",
   "version": "1.0.0",
-  "description": "Калькулятор площадей с множителем",
+  "description": "Калькулятор площадей",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -17,7 +17,7 @@
   },
   "build": {
     "appId": "com.areacalculator.app",
-    "productName": "Area Calculator",
+    "productName": "AreaCalc",
     "directories": {
       "output": "dist"
     },
