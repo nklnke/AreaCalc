@@ -1,4 +1,5 @@
 (async function() {
+    // ===== DOM ЭЛЕМЕНТЫ =====
     const widthInput = document.getElementById('widthInput');
     const heightInput = document.getElementById('heightInput');
     const addBtn = document.getElementById('addBtn');
@@ -10,6 +11,7 @@
     const lastItemInfo = document.getElementById('lastItemInfo');
     const customMultInput = document.getElementById('customMultInput');
     const applyCustomMult = document.getElementById('applyCustomMult');
+    const themeToggle = document.getElementById('themeToggle');
 
     // ===== КАСТОМНОЕ МОДАЛЬНОЕ ОКНО =====
     const modal = document.getElementById('customModal');
@@ -93,10 +95,69 @@
         }, 50);
     }
 
+    // ===== УПРАВЛЕНИЕ ТЕМОЙ =====
+    
+    // Обновление иконки кнопки
+    function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+            themeToggle.textContent = '☀️';
+            themeToggle.title = 'Переключить на светлую тему';
+        } else {
+            themeToggle.textContent = '🌙';
+            themeToggle.title = 'Переключить на тёмную тему';
+        }
+    }
+
+    // Загрузка сохранённой темы
+    function loadTheme() {
+        try {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeIcon(savedTheme);
+            } else {
+                // Проверяем системную тему
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    updateThemeIcon('dark');
+                }
+            }
+        } catch (e) {
+            console.log('Theme loading error:', e);
+        }
+    }
+
+    // Переключение темы
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    // Слушаем изменение системной темы
+    if (window.matchMedia) {
+        const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+        darkModeMedia.addEventListener('change', (e) => {
+            // Меняем только если пользователь явно не выбрал тему
+            if (!localStorage.getItem('theme')) {
+                const theme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                updateThemeIcon(theme);
+            }
+        });
+    }
+
+    // Добавляем обработчик для кнопки темы
+    themeToggle.addEventListener('click', toggleTheme);
+
     // ===== ОСНОВНАЯ ЛОГИКА =====
 
     let history = [];
 
+    // Загрузка данных из файла
     async function loadData() {
         try {
             const data = await window.electronAPI.loadData();
@@ -109,6 +170,7 @@
         }
     }
 
+    // Сохранение данных в файл
     async function saveData() {
         try {
             await window.electronAPI.saveData(history);
@@ -117,11 +179,13 @@
         }
     }
 
+    // Расчёт площади в м² из мм
     function calcAreaInM2(widthMM, heightMM) {
         const areaMM2 = widthMM * heightMM;
         return Math.round((areaMM2 / 1000000) * 100) / 100;
     }
 
+    // Получение общей площади
     function getTotalArea() {
         let sum = 0;
         for (let item of history) {
@@ -130,11 +194,13 @@
         return Math.round(sum * 100) / 100;
     }
 
+    // Получение последнего элемента
     function getLastItem() {
         if (history.length === 0) return null;
         return history[history.length - 1];
     }
 
+    // Обновление информации о последнем элементе
     function updateLastItemInfo() {
         const last = getLastItem();
         if (last) {
@@ -152,6 +218,7 @@
         }
     }
 
+    // Отрисовка интерфейса
     function render() {
         const total = getTotalArea();
         totalDisplay.innerHTML = `${total} <small>м²</small>`;
@@ -206,6 +273,7 @@
         forceActivateInputs();
     }
 
+    // Добавление новой записи
     async function addRecord() {
         const width = parseFloat(widthInput.value);
         const height = parseFloat(heightInput.value);
@@ -240,6 +308,7 @@
         setTimeout(() => widthInput.focus(), 50);
     }
 
+    // Умножение последнего элемента
     function multiplyLast(multiplier) {
         if (history.length === 0) {
             showError('Сначала добавьте хотя бы один элемент.');
@@ -257,6 +326,7 @@
 
         const newArea = Math.round((last.area * multiplier) * 100) / 100;
         
+        // Заменяем последний элемент на новый с множителем
         history[lastIndex] = {
             id: last.id,
             width: last.width,
@@ -273,13 +343,14 @@
         
         const w = Math.round(last.width);
         const h = Math.round(last.height);
-        lastItemInfo.textContent = `✅ ${w}×${h} мм × ${multiplier} = ${newArea.toFixed(4)} м²`;
+        lastItemInfo.textContent = `✅ ${w}×${h} мм × ${multiplier} = ${newArea.toFixed(2)} м²`;
         
         setTimeout(() => {
             updateLastItemInfo();
         }, 1500);
     }
 
+    // Удаление записи по ID
     async function deleteItemById(id) {
         const index = history.findIndex(item => item.id === id);
         if (index !== -1) {
@@ -289,6 +360,7 @@
         }
     }
 
+    // Очистка всей истории
     async function clearAll() {
         if (history.length === 0) return;
         history = [];
@@ -297,13 +369,15 @@
         setTimeout(() => widthInput.focus(), 50);
     }
 
-    // ===== ОБРАБОТЧИКИ =====
+    // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
     
+    // Кнопка "Добавить"
     addBtn.addEventListener('click', function(e) {
         e.preventDefault();
         addRecord();
     });
 
+    // Нажатие Enter в поле "Ширина"
     widthInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -315,6 +389,7 @@
         }
     });
 
+    // Нажатие Enter в поле "Высота"
     heightInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -322,7 +397,7 @@
         }
     });
 
-    // Постоянная защита полей
+    // Постоянная защита полей от блокировки
     [widthInput, heightInput].forEach(input => {
         input.addEventListener('click', function() {
             this.disabled = false;
@@ -338,6 +413,7 @@
         });
     });
 
+    // Кнопки множителя (×2, ×3, ×4, ×5)
     document.querySelectorAll('[data-mult]').forEach(btn => {
         btn.addEventListener('click', function() {
             const mult = parseFloat(this.getAttribute('data-mult'));
@@ -345,6 +421,7 @@
         });
     });
 
+    // Применение пользовательского множителя
     applyCustomMult.addEventListener('click', function() {
         const val = parseFloat(customMultInput.value);
         if (!isNaN(val) && val > 0) {
@@ -355,6 +432,7 @@
         }
     });
 
+    // Нажатие Enter в поле пользовательского множителя
     customMultInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -362,8 +440,10 @@
         }
     });
 
+    // Кнопка очистки истории
     clearAllBtn.addEventListener('click', clearAll);
 
+    // Подписка на событие очистки из меню (если есть)
     if (window.electronAPI && typeof window.electronAPI.onClearHistory === 'function') {
         window.electronAPI.onClearHistory(() => {
             clearAll();
@@ -372,68 +452,7 @@
 
     // ===== ЗАПУСК =====
     loadTheme(); // Загружаем тему
-    await loadData();
-    forceActivateInputs();
-    setTimeout(() => widthInput.focus(), 100);
+    await loadData(); // Загружаем данные
+    forceActivateInputs(); // Активируем поля
+    setTimeout(() => widthInput.focus(), 100); // Ставим фокус
 })();
-
-
-const themeToggle = document.getElementById('themeToggle');
-
-    // ===== УПРАВЛЕНИЕ ТЕМОЙ =====
-    
-    // Загрузка сохранённой темы
-    function loadTheme() {
-        try {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                updateThemeIcon(savedTheme);
-            } else {
-                // Проверяем системную тему
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    updateThemeIcon('dark');
-                }
-            }
-        } catch (e) {
-            console.log('Theme loading error:', e);
-        }
-    }
-
-    // Обновление иконки кнопки
-    function updateThemeIcon(theme) {
-        if (theme === 'dark') {
-            themeToggle.textContent = '☀️';
-            themeToggle.title = 'Переключить на светлую тему';
-        } else {
-            themeToggle.textContent = '🌙';
-            themeToggle.title = 'Переключить на тёмную тему';
-        }
-    }
-
-    // Переключение темы
-    function toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-    }
-
-    // Слушаем изменение системной темы
-    if (window.matchMedia) {
-        const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
-        darkModeMedia.addEventListener('change', (e) => {
-            // Меняем только если пользователь явно не выбрал тему
-            if (!localStorage.getItem('theme')) {
-                const theme = e.matches ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', theme);
-                updateThemeIcon(theme);
-            }
-        });
-    }
-
-    // Добавляем обработчик для кнопки темы
-    themeToggle.addEventListener('click', toggleTheme);

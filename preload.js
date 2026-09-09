@@ -4,7 +4,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   loadData: () => ipcRenderer.invoke('load-data'),
   saveData: (data) => ipcRenderer.invoke('save-data', data),
-  clearData: () => ipcRenderer.invoke('clear-data'),
   
   // Исправленный метод для обработки событий из меню
   onClearHistory: (callback) => {

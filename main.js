@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -7,7 +7,7 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 480,
-    height: 900,
+    height: 750,
     resizable: false,
     maximizable: false,
     fullscreenable: false,
