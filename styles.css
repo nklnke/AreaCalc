@@ -617,7 +617,7 @@ body {
     }
 }
 
-/* ===== Убираем глобальную прокрутку ===== */
+/* Убираем глобальную прокрутку */
 ::-webkit-scrollbar {
     width: 0px;
     height: 0px;
@@ -627,4 +627,43 @@ body {
 * {
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+/* Переключатель точности округления */
+.total-area-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.precision-toggle {
+    display: flex;
+    background: var(--bg-count);
+    border-radius: 20px;
+    padding: 2px;
+    gap: 2px;
+    width: fit-content;
+}
+
+.precision-btn {
+    background: transparent;
+    border: none;
+    border-radius: 18px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.precision-btn.active {
+    background: var(--bg-app);
+    color: var(--btn-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.precision-btn:hover:not(.active) {
+    color: var(--text-secondary);
 }

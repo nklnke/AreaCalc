@@ -153,6 +153,59 @@
     // Добавляем обработчик для кнопки темы
     themeToggle.addEventListener('click', toggleTheme);
 
+    // ===== ПЕРЕКЛЮЧАТЕЛЬ ТОЧНОСТИ =====
+    const precisionBtns = document.querySelectorAll('.precision-btn');
+    let currentPrecision = 2; // Точность по умолчанию (2, 3 или 4)
+
+    // Установка точности
+    function setPrecision(precision) {
+        currentPrecision = precision;
+        localStorage.setItem('precision', precision);
+        
+        // Обновляем активную кнопку
+        precisionBtns.forEach(btn => {
+            if (parseInt(btn.dataset.precision) === precision) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Просто перерисовываем — точные значения уже сохранены
+        render();
+    }
+
+    // Загрузка сохранённой точности
+    function loadPrecision() {
+        try {
+            const saved = localStorage.getItem('precision');
+            if (saved) {
+                const precision = parseInt(saved);
+                if (precision === 2 || precision === 3 || precision === 4) {
+                    currentPrecision = precision;
+                }
+            }
+        } catch (e) {
+            console.log('Precision loading error:', e);
+        }
+        
+        precisionBtns.forEach(btn => {
+            if (parseInt(btn.dataset.precision) === currentPrecision) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // Обработчики кнопок точности
+    precisionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const precision = parseInt(this.dataset.precision);
+            setPrecision(precision);
+        });
+    });
+
     // ===== ОСНОВНАЯ ЛОГИКА =====
 
     let history = [];
@@ -179,19 +232,25 @@
         }
     }
 
-    // Расчёт площади в м² из мм
-    function calcAreaInM2(widthMM, heightMM) {
-        const areaMM2 = widthMM * heightMM;
-        return Math.round((areaMM2 / 1000000) * 100) / 100;
+    // Точная площадь в м² (без округления)
+    function getRawArea(item) {
+        return (item.width * item.height) / 1000000;
     }
 
-    // Получение общей площади
+    // Площадь с учётом множителя (точная, без округления)
+    function getDisplayArea(item) {
+        const raw = getRawArea(item);
+        const multiplier = (item.isMultiplied && item.multiplier) ? item.multiplier : 1;
+        return raw * multiplier;
+    }
+
+    // Общая площадь (точная сумма всех площадей с множителями)
     function getTotalArea() {
         let sum = 0;
         for (let item of history) {
-            sum += item.area;
+            sum += getDisplayArea(item);
         }
-        return Math.round(sum * 100) / 100;
+        return sum;
     }
 
     // Получение последнего элемента
@@ -206,9 +265,11 @@
         if (last) {
             const w = Math.round(last.width);
             const h = Math.round(last.height);
-            let infoText = `${w}×${h} мм = ${last.area.toFixed(2)} м²`;
+            const displayArea = getDisplayArea(last).toFixed(currentPrecision);
+            
+            let infoText = `${w}×${h} мм = ${displayArea} м²`;
             if (last.isMultiplied && last.multiplier) {
-                infoText = `${w}×${h} мм × ${last.multiplier} = ${last.area.toFixed(2)} м²`;
+                infoText = `${w}×${h} мм × ${last.multiplier} = ${displayArea} м²`;
             }
             lastItemInfo.textContent = infoText;
             multiplierSection.classList.add('visible');
@@ -221,7 +282,7 @@
     // Отрисовка интерфейса
     function render() {
         const total = getTotalArea();
-        totalDisplay.innerHTML = `${total} <small>м²</small>`;
+        totalDisplay.innerHTML = `${total.toFixed(currentPrecision)} <small>м²</small>`;
 
         itemsCount.textContent = history.length;
 
@@ -239,7 +300,7 @@
             const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
             const w = Math.round(item.width);
             const h = Math.round(item.height);
-            const area = item.area.toFixed(2);
+            const displayArea = getDisplayArea(item).toFixed(currentPrecision);
             
             let dimsText = `${w} × ${h} мм`;
             if (item.isMultiplied && item.multiplier) {
@@ -253,7 +314,7 @@
                         <div class="item-time">${timeStr}</div>
                     </div>
                     <div class="item-actions">
-                        <span class="area-badge">${area} м²</span>
+                        <span class="area-badge">${displayArea} м²</span>
                         <button class="del-btn" data-id="${item.id}">✕</button>
                     </div>
                 </li>
@@ -288,13 +349,11 @@
             return;
         }
 
-        const area = calcAreaInM2(width, height);
-
+        // Сохраняем только размеры — площадь считается при отображении
         const newItem = {
             id: Date.now() + Math.random().toString(36).substr(2, 4),
             width: width,
             height: height,
-            area: area,
             timestamp: Date.now(),
             isMultiplied: false
         };
@@ -324,18 +383,14 @@
         const last = history[lastIndex];
         if (!last) return;
 
-        const newArea = Math.round((last.area * multiplier) * 100) / 100;
-        
-        // Заменяем последний элемент на новый с множителем
+        // Сохраняем только множитель — размеры уже есть
         history[lastIndex] = {
             id: last.id,
             width: last.width,
             height: last.height,
-            area: newArea,
             multiplier: multiplier,
             timestamp: Date.now(),
-            isMultiplied: true,
-            originalArea: last.originalArea || last.area
+            isMultiplied: true
         };
 
         saveData();
@@ -343,7 +398,9 @@
         
         const w = Math.round(last.width);
         const h = Math.round(last.height);
-        lastItemInfo.textContent = `✅ ${w}×${h} мм × ${multiplier} = ${newArea.toFixed(2)} м²`;
+        const raw = (last.width * last.height) / 1000000;
+        const displayArea = (raw * multiplier).toFixed(currentPrecision);
+        lastItemInfo.textContent = `✅ ${w}×${h} мм × ${multiplier} = ${displayArea} м²`;
         
         setTimeout(() => {
             updateLastItemInfo();
@@ -451,8 +508,9 @@
     }
 
     // ===== ЗАПУСК =====
-    loadTheme(); // Загружаем тему
-    await loadData(); // Загружаем данные
+    loadTheme();       // Загружаем тему
+    loadPrecision();   // Загружаем точность
+    await loadData();  // Загружаем данные
     forceActivateInputs(); // Активируем поля
     setTimeout(() => widthInput.focus(), 100); // Ставим фокус
 })();

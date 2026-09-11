@@ -62,7 +62,14 @@
         </div>
 
         <div class="total-area">
-            <span>📊 Общая площадь</span>
+            <div class="total-area-left">
+                <span>📊 Общая площадь</span>
+                <div class="precision-toggle">
+                    <button class="precision-btn active" data-precision="2" title="Округление до сотых">0.00</button>
+                    <button class="precision-btn" data-precision="3" title="Округление до тысячных">0.000</button>
+                    <button class="precision-btn" data-precision="4" title="Округление до десятитысячных">0.0000</button>
+                </div>
+            </div>
             <span class="value" id="totalDisplay">0 <small>м²</small></span>
         </div>
 
