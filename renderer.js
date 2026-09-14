@@ -209,6 +209,7 @@
     // ===== ОСНОВНАЯ ЛОГИКА =====
 
     let history = [];
+    let newItemIds = new Set(); // ID записей, которые нужно анимировать
 
     // Загрузка данных из файла
     async function loadData() {
@@ -289,7 +290,6 @@
         if (history.length === 0) {
             historyList.innerHTML = `<li class="empty-state">📭 История пуста</li>`;
             updateLastItemInfo();
-            forceActivateInputs();
             return;
         }
 
@@ -307,8 +307,9 @@
                 dimsText += ` <span class="multiplier-badge">×${item.multiplier}</span>`;
             }
             
+            const isNew = newItemIds.has(item.id);
             html += `
-                <li data-id="${item.id}">
+                <li data-id="${item.id}" class="${isNew ? 'new' : ''}">
                     <div class="item-info">
                         <div class="item-dims">${dimsText}</div>
                         <div class="item-time">${timeStr}</div>
@@ -323,26 +324,15 @@
         }
         historyList.innerHTML = html;
 
-        // Обработчики кнопок удаления
-        historyList.querySelectorAll('.del-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const id = this.getAttribute('data-id');
-                if (id) deleteItemById(id);
-            });
+        // Привязываем обработчики ко всем записям
+        historyList.querySelectorAll('li[data-id]').forEach(li => {
+            attachItemHandlers(li);
         });
 
-        // Обработчики кнопок дублирования
-        historyList.querySelectorAll('.dup-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const id = this.getAttribute('data-id');
-                if (id) duplicateItemById(id);
-            });
-        });
+        // Очищаем список новых — анимация проиграется один раз
+        newItemIds.clear();
 
         updateLastItemInfo();
-        forceActivateInputs();
     }
 
     // Добавление новой записи
@@ -370,6 +360,7 @@
         };
 
         history.push(newItem);
+        newItemIds.add(newItem.id); // ← помечаем как новую
         await saveData();
         render();
 
@@ -418,24 +409,54 @@
         }, 1500);
     }
 
-    // Удаление записи по ID
+    // Удаление записи по ID (с анимацией, без мигания)
     async function deleteItemById(id) {
         const index = history.findIndex(item => item.id === id);
-        if (index !== -1) {
+        if (index === -1) return;
+
+        const li = historyList.querySelector(`li[data-id="${id}"]`);
+        
+        if (li) {
+            li.classList.add('removing');
+            
+            setTimeout(async () => {
+                history.splice(index, 1);
+                newItemIds.delete(id); // ← убираем из списка новых
+                await saveData();
+                
+                // Удаляем элемент из DOM напрямую, без полной перерисовки
+                li.remove();
+                
+                // Обновляем только счётчики и сумму
+                updateTotals();
+                updateLastItemInfo();
+                
+                // Если история опустела — показываем пустое состояние
+                if (history.length === 0) {
+                    historyList.innerHTML = `<li class="empty-state">📭 История пуста</li>`;
+                }
+            }, 350);
+        } else {
             history.splice(index, 1);
             await saveData();
             render();
         }
     }
 
-    // Дублирование записи по ID
+    // Обновление только суммы и счётчика (без перерисовки списка)
+    function updateTotals() {
+        const total = getTotalArea();
+        totalDisplay.innerHTML = `${total.toFixed(currentPrecision)} <small>м²</small>`;
+        itemsCount.textContent = history.length;
+    }
+
+    // Дублирование записи по ID (с анимацией появления)
     async function duplicateItemById(id) {
         const index = history.findIndex(item => item.id === id);
         if (index === -1) return;
         
         const original = history[index];
         
-        // Создаём копию с новым ID и текущим временем
         const duplicate = {
             id: Date.now() + Math.random().toString(36).substr(2, 4),
             width: original.width,
@@ -445,13 +466,31 @@
             timestamp: Date.now()
         };
         
-        // Вставляем сразу после оригинала
         history.splice(index + 1, 0, duplicate);
+        newItemIds.add(duplicate.id); // ← помечаем как новую
         
         await saveData();
-        render();
         
-        // Показываем уведомление
+        // Создаём новый DOM-элемент и вставляем после оригинала
+        const originalLi = historyList.querySelector(`li[data-id="${id}"]`);
+        if (originalLi) {
+            const newLi = createHistoryItem(duplicate);
+            newLi.classList.add('new'); // добавляем класс анимации
+            originalLi.after(newLi);
+            
+            // Привязываем обработчики
+            attachItemHandlers(newLi);
+            
+            // Обновляем счётчики
+            updateTotals();
+            updateLastItemInfo();
+            
+            // Очищаем флаг новой записи
+            newItemIds.delete(duplicate.id);
+        } else {
+            render();
+        }
+        
         const w = Math.round(original.width);
         const h = Math.round(original.height);
         lastItemInfo.textContent = `📋 Скопировано: ${w}×${h} мм`;
@@ -460,16 +499,90 @@
         }, 1500);
     }
 
-    // Очистка всей истории
-    async function clearAll() {
-        if (history.length === 0) return;
-        history = [];
-        await saveData();
-        render();
-        setTimeout(() => widthInput.focus(), 50);
+    // Создание DOM-элемента для записи
+    function createHistoryItem(item) {
+        const date = new Date(item.timestamp);
+        const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        const w = Math.round(item.width);
+        const h = Math.round(item.height);
+        const displayArea = getDisplayArea(item).toFixed(currentPrecision);
+        
+        let dimsText = `${w} × ${h} мм`;
+        if (item.isMultiplied && item.multiplier) {
+            dimsText += ` <span class="multiplier-badge">×${item.multiplier}</span>`;
+        }
+        
+        const li = document.createElement('li');
+        li.dataset.id = item.id;
+        li.innerHTML = `
+            <div class="item-info">
+                <div class="item-dims">${dimsText}</div>
+                <div class="item-time">${timeStr}</div>
+            </div>
+            <div class="item-actions">
+                <span class="area-badge">${displayArea} м²</span>
+                <button class="dup-btn" data-id="${item.id}" title="Дублировать">📋</button>
+                <button class="del-btn" data-id="${item.id}" title="Удалить">✕</button>
+            </div>
+        `;
+        return li;
     }
 
-    // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
+    // Привязка обработчиков к элементу записи
+    function attachItemHandlers(li) {
+        const delBtn = li.querySelector('.del-btn');
+        const dupBtn = li.querySelector('.dup-btn');
+        
+        if (delBtn) {
+            delBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.add('clicked');
+                const id = this.getAttribute('data-id');
+                setTimeout(() => deleteItemById(id), 100);
+            });
+        }
+        
+        if (dupBtn) {
+            dupBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = this.getAttribute('data-id');
+                duplicateItemById(id);
+            });
+        }
+    }
+
+    // Очистка всей истории (с анимацией)
+    async function clearAll() {
+        if (history.length === 0) return;
+
+        const items = historyList.querySelectorAll('li');
+        
+        if (items.length > 0) {
+            // Запускаем анимацию для всех записей
+            items.forEach((li, index) => {
+                setTimeout(() => {
+                    li.classList.add('removing-all');
+                }, index * 30); // Поочерёдное исчезновение
+            });
+
+            // Ждём окончания всех анимаций
+            const totalTime = items.length * 30 + 300;
+            
+            setTimeout(async () => {
+                history = [];
+                await saveData();
+                render();
+                setTimeout(() => widthInput.focus(), 50);
+            }, totalTime);
+        } else {
+            history = [];
+            await saveData();
+            render();
+            setTimeout(() => widthInput.focus(), 50);
+        }
+    }
+
+    // ОБРАБОТЧИКИ СОБЫТИЙ
     
     // Кнопка "Добавить"
     addBtn.addEventListener('click', function(e) {

@@ -71,7 +71,20 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Transition только для смены темы — на конкретных элементах */
+body,
+.app,
+.header,
+.input-group input,
+.btn-add,
+.multiplier-section,
+.total-area,
+.history-list li,
+.theme-toggle,
+.modal-content {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -448,7 +461,6 @@ body {
     justify-content: space-between;
     align-items: center;
     border: 1px solid var(--border-light);
-    animation: fadeIn 0.2s ease;
 }
 
 .history-list li .item-info {
@@ -583,13 +595,25 @@ body {
 
 /* ===== Анимации ===== */
 @keyframes modalSlideIn {
-    from { transform: translateY(-20px) scale(0.95); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0.4; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== Адаптив ===== */
@@ -691,3 +715,100 @@ body {
     color: var(--btn-primary);
     transform: scale(0.9);
 }
+
+/* ===== Анимация удаления записи ===== */
+.history-list li.removing {
+    animation: slideOutRight 0.35s ease forwards;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+@keyframes slideOutRight {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        max-height: 100px;
+        margin-bottom: 8px;
+        padding: 14px 16px;
+    }
+    40% {
+        opacity: 0.5;
+        transform: translateX(40px) scale(0.95);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100px) scale(0.9);
+        max-height: 0;
+        margin-bottom: 0;
+        padding: 0 16px;
+        border-width: 0;
+    }
+}
+
+/* Анимация для кнопки удаления при клике */
+.del-btn.clicked {
+    animation: delBtnPulse 0.4s ease;
+}
+
+@keyframes delBtnPulse {
+    0% {
+        transform: scale(1);
+        color: var(--text-lighter);
+    }
+    30% {
+        transform: scale(1.4);
+        color: #d13b3b;
+    }
+    60% {
+        transform: scale(0.9);
+        color: #d13b3b;
+    }
+    100% {
+        transform: scale(1);
+        color: var(--text-lighter);
+    }
+}
+
+/* Анимация удаления всех записей */
+.history-list li.removing-all {
+    animation: slideOutAll 0.3s ease forwards;
+}
+
+@keyframes slideOutAll {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.85);
+        max-height: 0;
+        margin-bottom: 0;
+        padding: 0 16px;
+    }
+}
+
+/* Анимация появления новой записи */
+.history-list li.new {
+    animation: slideInDown 0.3s ease;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 100px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        margin-bottom: 8px;
+    }
+}
+
