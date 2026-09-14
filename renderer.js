@@ -13,6 +13,15 @@
     const applyCustomMult = document.getElementById('applyCustomMult');
     const themeToggle = document.getElementById('themeToggle');
 
+    // Элементы модального окна редактирования
+    const editModal = document.getElementById('editModal');
+    const editWidth = document.getElementById('editWidth');
+    const editHeight = document.getElementById('editHeight');
+    const editMultiplier = document.getElementById('editMultiplier');
+    const editPreview = document.getElementById('editPreview');
+    const editCancelBtn = document.getElementById('editCancelBtn');
+    const editSaveBtn = document.getElementById('editSaveBtn');
+
     // ===== КАСТОМНОЕ МОДАЛЬНОЕ ОКНО =====
     const modal = document.getElementById('customModal');
     const modalMessage = document.getElementById('modalMessage');
@@ -210,6 +219,8 @@
 
     let history = [];
     let newItemIds = new Set(); // ID записей, которые нужно анимировать
+    let editingId = null; // ID записи, которую редактируем
+    let isRendering = false; // Защита от параллельных рендеров
 
     // Загрузка данных из файла
     async function loadData() {
@@ -282,8 +293,13 @@
 
     // Отрисовка интерфейса
     function render() {
-        const total = getTotalArea();
-        totalDisplay.innerHTML = `${total.toFixed(currentPrecision)} <small>м²</small>`;
+        // Защита от параллельных вызовов
+        if (isRendering) return;
+        isRendering = true;
+        
+        try {
+            const total = getTotalArea();
+            totalDisplay.innerHTML = `${total.toFixed(currentPrecision)} <small>м²</small>`;
 
         itemsCount.textContent = history.length;
 
@@ -333,6 +349,9 @@
         newItemIds.clear();
 
         updateLastItemInfo();
+        } finally {
+            isRendering = false;
+        }
     }
 
     // Добавление новой записи
@@ -409,38 +428,72 @@
         }, 1500);
     }
 
-    // Удаление записи по ID (с анимацией, без мигания)
+    // Удаление записи по ID (с надёжной анимацией)
     async function deleteItemById(id) {
         const index = history.findIndex(item => item.id === id);
         if (index === -1) return;
 
         const li = historyList.querySelector(`li[data-id="${id}"]`);
         
-        if (li) {
-            li.classList.add('removing');
-            
-            setTimeout(async () => {
-                history.splice(index, 1);
-                newItemIds.delete(id); // ← убираем из списка новых
-                await saveData();
-                
-                // Удаляем элемент из DOM напрямую, без полной перерисовки
-                li.remove();
-                
-                // Обновляем только счётчики и сумму
-                updateTotals();
-                updateLastItemInfo();
-                
-                // Если история опустела — показываем пустое состояние
-                if (history.length === 0) {
-                    historyList.innerHTML = `<li class="empty-state">📭 История пуста</li>`;
-                }
-            }, 350);
-        } else {
+        if (!li) {
+            // Если элемента нет в DOM — удаляем сразу
             history.splice(index, 1);
+            newItemIds.delete(id);
             await saveData();
             render();
+            return;
         }
+
+        // Защита от повторного клика
+        if (li.dataset.removing === 'true') return;
+        li.dataset.removing = 'true';
+
+        // Запускаем анимацию
+        li.classList.add('removing');
+
+        // Функция завершения удаления
+        const finishDelete = async () => {
+            // Проверяем, что запись ещё в истории
+            const currentIndex = history.findIndex(item => item.id === id);
+            if (currentIndex !== -1) {
+                history.splice(currentIndex, 1);
+                newItemIds.delete(id);
+                await saveData();
+            }
+            
+            // Удаляем элемент из DOM
+            if (li.parentNode) {
+                li.remove();
+            }
+            
+            // Обновляем счётчики
+            updateTotals();
+            updateLastItemInfo();
+            
+            // Если история опустела — показываем пустое состояние
+            if (history.length === 0) {
+                historyList.innerHTML = `<li class="empty-state">📭 История пуста</li>`;
+            }
+        };
+
+        // Ждём окончания анимации через animationend
+        let animationEnded = false;
+        const onAnimationEnd = (e) => {
+            // Игнорируем всплывающие события от дочерних элементов
+            if (e.target !== li) return;
+            animationEnded = true;
+            li.removeEventListener('animationend', onAnimationEnd);
+            finishDelete();
+        };
+        li.addEventListener('animationend', onAnimationEnd);
+
+        // Запасной таймер на случай, если animationend не сработает
+        setTimeout(() => {
+            if (!animationEnded) {
+                li.removeEventListener('animationend', onAnimationEnd);
+                finishDelete();
+            }
+        }, 500);
     }
 
     // Обновление только суммы и счётчика (без перерисовки списка)
@@ -532,24 +585,154 @@
     function attachItemHandlers(li) {
         const delBtn = li.querySelector('.del-btn');
         const dupBtn = li.querySelector('.dup-btn');
+        const id = li.getAttribute('data-id');
         
         if (delBtn) {
             delBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
+                
+                // Защита от повторного клика
+                if (this.dataset.clicked === 'true') return;
+                this.dataset.clicked = 'true';
+                
                 this.classList.add('clicked');
-                const id = this.getAttribute('data-id');
-                setTimeout(() => deleteItemById(id), 100);
+                
+                // Небольшая задержка для анимации кнопки
+                setTimeout(() => {
+                    deleteItemById(id);
+                }, 150);
             });
         }
         
         if (dupBtn) {
             dupBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                const id = this.getAttribute('data-id');
                 duplicateItemById(id);
             });
         }
+
+        // Клик по самой записи — редактирование
+        li.addEventListener('click', function(e) {
+            // Игнорируем клики по кнопкам
+            if (e.target.closest('button')) return;
+            openEditModal(id);
+        });
     }
+
+    // ===== РЕДАКТИРОВАНИЕ ЗАПИСЕЙ =====
+
+    // Открытие модального окна редактирования
+    function openEditModal(id) {
+        const item = history.find(i => i.id === id);
+        if (!item) return;
+
+        editingId = id;
+
+        // Заполняем поля
+        editWidth.value = item.width;
+        editHeight.value = item.height;
+        editMultiplier.value = item.multiplier || 1;
+
+        // Обновляем превью
+        updateEditPreview();
+
+        // Показываем модальное окно
+        editModal.style.display = 'flex';
+
+        // Фокус на первое поле
+        setTimeout(() => {
+            editWidth.focus();
+            editWidth.select();
+        }, 50);
+    }
+
+    // Обновление превью площади в модальном окне
+    function updateEditPreview() {
+        const w = parseFloat(editWidth.value) || 0;
+        const h = parseFloat(editHeight.value) || 0;
+        const m = parseFloat(editMultiplier.value) || 1;
+        
+        const area = (w * h / 1000000) * m;
+        editPreview.textContent = `${area.toFixed(currentPrecision)} м²`;
+    }
+
+    // Сохранение изменений
+    async function saveEdit() {
+        if (editingId === null) return;
+
+        const w = parseFloat(editWidth.value);
+        const h = parseFloat(editHeight.value);
+        const m = parseFloat(editMultiplier.value);
+
+        // Валидация
+        if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
+            await showError('Введите положительные числа для ширины и высоты.');
+            return;
+        }
+
+        if (isNaN(m) || m <= 0) {
+            await showError('Множитель должен быть положительным числом.');
+            return;
+        }
+
+        const index = history.findIndex(i => i.id === editingId);
+        if (index === -1) return;
+
+        // Обновляем запись
+        history[index].width = w;
+        history[index].height = h;
+        
+        // Если множитель не 1 — сохраняем его, иначе убираем
+        if (m !== 1) {
+            history[index].multiplier = m;
+            history[index].isMultiplied = true;
+        } else {
+            delete history[index].multiplier;
+            history[index].isMultiplied = false;
+        }
+
+        // Обновляем время
+        history[index].timestamp = Date.now();
+
+        await saveData();
+        render();
+
+        closeEditModal();
+    }
+
+    // Закрытие модального окна редактирования
+    function closeEditModal() {
+        editModal.style.display = 'none';
+        editingId = null;
+    }
+
+    // Обработчики для модального окна
+    editWidth.addEventListener('input', updateEditPreview);
+    editHeight.addEventListener('input', updateEditPreview);
+    editMultiplier.addEventListener('input', updateEditPreview);
+
+    editCancelBtn.addEventListener('click', closeEditModal);
+    editSaveBtn.addEventListener('click', saveEdit);
+
+    // Enter — сохранить, Esc — отмена
+    [editWidth, editHeight, editMultiplier].forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveEdit();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeEditModal();
+            }
+        });
+    });
+
+    // Закрытие по клику вне окна
+    editModal.addEventListener('click', function(e) {
+        if (e.target === editModal) {
+            closeEditModal();
+        }
+    });
 
     // Очистка всей истории (с анимацией)
     async function clearAll() {
