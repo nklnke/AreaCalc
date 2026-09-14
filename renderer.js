@@ -315,18 +315,29 @@
                     </div>
                     <div class="item-actions">
                         <span class="area-badge">${displayArea} м²</span>
-                        <button class="del-btn" data-id="${item.id}">✕</button>
+                        <button class="dup-btn" data-id="${item.id}" title="Дублировать">📋</button>
+                        <button class="del-btn" data-id="${item.id}" title="Удалить">✕</button>
                     </div>
                 </li>
             `;
         }
         historyList.innerHTML = html;
 
+        // Обработчики кнопок удаления
         historyList.querySelectorAll('.del-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const id = this.getAttribute('data-id');
                 if (id) deleteItemById(id);
+            });
+        });
+
+        // Обработчики кнопок дублирования
+        historyList.querySelectorAll('.dup-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = this.getAttribute('data-id');
+                if (id) duplicateItemById(id);
             });
         });
 
@@ -415,6 +426,38 @@
             await saveData();
             render();
         }
+    }
+
+    // Дублирование записи по ID
+    async function duplicateItemById(id) {
+        const index = history.findIndex(item => item.id === id);
+        if (index === -1) return;
+        
+        const original = history[index];
+        
+        // Создаём копию с новым ID и текущим временем
+        const duplicate = {
+            id: Date.now() + Math.random().toString(36).substr(2, 4),
+            width: original.width,
+            height: original.height,
+            multiplier: original.multiplier || 1,
+            isMultiplied: original.isMultiplied || false,
+            timestamp: Date.now()
+        };
+        
+        // Вставляем сразу после оригинала
+        history.splice(index + 1, 0, duplicate);
+        
+        await saveData();
+        render();
+        
+        // Показываем уведомление
+        const w = Math.round(original.width);
+        const h = Math.round(original.height);
+        lastItemInfo.textContent = `📋 Скопировано: ${w}×${h} мм`;
+        setTimeout(() => {
+            updateLastItemInfo();
+        }, 1500);
     }
 
     // Очистка всей истории
