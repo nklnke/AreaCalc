@@ -4,6 +4,13 @@ const fs = require('fs');
 
 let mainWindow;
 
+// ===== ОПТИМИЗАЦИЯ ЗАПУСКА =====
+// Отключаем ненужные функции Chromium для ускорения
+app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion');
+app.commandLine.appendSwitch('disable-background-timer-throttling');
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 480,
@@ -12,14 +19,20 @@ function createWindow() {
     maximizable: false,
     fullscreenable: false,
     icon: path.join(__dirname, 'icon.ico'),
+    show: false,  // показывать, только когда готово
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      spellcheck: false // отключить словари
     },
     title: 'Area Calculator',
     backgroundColor: '#f4f6fa',
     frame: true
+  });
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
   });
 
   mainWindow.loadFile('index.html');
