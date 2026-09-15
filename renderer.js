@@ -144,6 +144,12 @@
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
+        
+        // Анимация вращения иконки
+        themeToggle.classList.add('changing');
+        setTimeout(() => {
+            themeToggle.classList.remove('changing');
+        }, 500);
     }
 
     // Слушаем изменение системной темы
@@ -301,54 +307,59 @@
             const total = getTotalArea();
             totalDisplay.innerHTML = `${total.toFixed(currentPrecision)} <small>м²</small>`;
 
-        itemsCount.textContent = history.length;
-
-        if (history.length === 0) {
-            historyList.innerHTML = `<li class="empty-state">📭 История пуста</li>`;
-            updateLastItemInfo();
-            return;
-        }
-
-        let html = '';
-        const reversed = [...history].reverse();
-        for (let item of reversed) {
-            const date = new Date(item.timestamp);
-            const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-            const w = Math.round(item.width);
-            const h = Math.round(item.height);
-            const displayArea = getDisplayArea(item).toFixed(currentPrecision);
+            itemsCount.textContent = history.length;
             
-            let dimsText = `${w} × ${h} мм`;
-            if (item.isMultiplied && item.multiplier) {
-                dimsText += ` <span class="multiplier-badge">×${item.multiplier}</span>`;
+            // Анимация обновления
+            totalDisplay.classList.remove('updated');
+            void totalDisplay.offsetWidth;
+            totalDisplay.classList.add('updated');
+
+            if (history.length === 0) {
+                historyList.innerHTML = `<li class="empty-state">📭 История пуста</li>`;
+                updateLastItemInfo();
+                return;
             }
-            
-            const isNew = newItemIds.has(item.id);
-            html += `
-                <li data-id="${item.id}" class="${isNew ? 'new' : ''}">
-                    <div class="item-info">
-                        <div class="item-dims">${dimsText}</div>
-                        <div class="item-time">${timeStr}</div>
-                    </div>
-                    <div class="item-actions">
-                        <span class="area-badge">${displayArea} м²</span>
-                        <button class="dup-btn" data-id="${item.id}" title="Дублировать">📋</button>
-                        <button class="del-btn" data-id="${item.id}" title="Удалить">✕</button>
-                    </div>
-                </li>
-            `;
-        }
-        historyList.innerHTML = html;
 
-        // Привязываем обработчики ко всем записям
-        historyList.querySelectorAll('li[data-id]').forEach(li => {
-            attachItemHandlers(li);
-        });
+            let html = '';
+            const reversed = [...history].reverse();
+            for (let item of reversed) {
+                const date = new Date(item.timestamp);
+                const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                const w = Math.round(item.width);
+                const h = Math.round(item.height);
+                const displayArea = getDisplayArea(item).toFixed(currentPrecision);
+                
+                let dimsText = `${w} × ${h} мм`;
+                if (item.isMultiplied && item.multiplier) {
+                    dimsText += ` <span class="multiplier-badge">×${item.multiplier}</span>`;
+                }
+                
+                const isNew = newItemIds.has(item.id);
+                html += `
+                    <li data-id="${item.id}" class="${isNew ? 'new' : ''}">
+                        <div class="item-info">
+                            <div class="item-dims">${dimsText}</div>
+                            <div class="item-time">${timeStr}</div>
+                        </div>
+                        <div class="item-actions">
+                            <span class="area-badge">${displayArea} м²</span>
+                            <button class="dup-btn" data-id="${item.id}" title="Дублировать">📋</button>
+                            <button class="del-btn" data-id="${item.id}" title="Удалить">✕</button>
+                        </div>
+                    </li>
+                `;
+            }
+            historyList.innerHTML = html;
 
-        // Очищаем список новых — анимация проиграется один раз
-        newItemIds.clear();
+            // Привязываем обработчики ко всем записям
+            historyList.querySelectorAll('li[data-id]').forEach(li => {
+                attachItemHandlers(li);
+            });
 
-        updateLastItemInfo();
+            // Очищаем список новых — анимация проиграется один раз
+            newItemIds.clear();
+
+            updateLastItemInfo();
         } finally {
             isRendering = false;
         }
@@ -501,6 +512,16 @@
         const total = getTotalArea();
         totalDisplay.innerHTML = `${total.toFixed(currentPrecision)} <small>м²</small>`;
         itemsCount.textContent = history.length;
+        
+        // Анимация обновления значения
+        totalDisplay.classList.remove('updated');
+        void totalDisplay.offsetWidth; // Триггер перерисовки
+        totalDisplay.classList.add('updated');
+        
+        // Анимация счётчика
+        itemsCount.classList.remove('updated');
+        void itemsCount.offsetWidth;
+        itemsCount.classList.add('updated');
     }
 
     // Дублирование записи по ID (с анимацией появления)
@@ -849,7 +870,9 @@
     // ===== ЗАПУСК =====
     loadTheme();       // Загружаем тему
     loadPrecision();   // Загружаем точность
-    await loadData();  // Загружаем данные
+    loadData().then(() => {
+        setTimeout(() => widthInput.focus(), 50);
+    });  // Загружаем данные
     forceActivateInputs(); // Активируем поля
     setTimeout(() => widthInput.focus(), 100); // Ставим фокус
 })();
