@@ -251,6 +251,18 @@
         }
     }
 
+    // ===== СКЕЛЕТОН ЗАГРУЗКИ =====
+    
+    // Показать скелетон
+    function showSkeleton() {
+        document.body.classList.add('loading');
+    }
+
+    // Скрыть скелетон
+    function hideSkeleton() {
+        document.body.classList.remove('loading');
+    }
+
     // Точная площадь в м² (без округления)
     function getRawArea(item) {
         return (item.width * item.height) / 1000000;
@@ -909,11 +921,20 @@
     }
 
     // ===== ЗАПУСК =====
+    showSkeleton();    // Показываем скелетон
     loadTheme();       // Загружаем тему
     loadPrecision();   // Загружаем точность
-    loadData().then(() => {
-        setTimeout(() => widthInput.focus(), 50);
-    });  // Загружаем данные
-    forceActivateInputs(); // Активируем поля
-    setTimeout(() => widthInput.focus(), 100); // Ставим фокус
+    
+    // Небольшая задержка, чтобы скелетон был виден даже при мгновенной загрузке
+    // (убирает "мигание" при быстрой загрузке)
+    const minSkeletonTime = new Promise(resolve => setTimeout(resolve, 400));
+    
+    await Promise.all([
+        loadData(),      // Загружаем данные
+        minSkeletonTime  // Ждём минимум 400ms
+    ]);
+    
+    hideSkeleton();    // Скрываем скелетон
+    forceActivateInputs();
+    setTimeout(() => widthInput.focus(), 100);
 })();

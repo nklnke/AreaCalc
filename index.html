@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Area Calculator</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="skeleton.css">
 </head>
 <body>
     <!-- Кастомное модальное окно вместо alert -->
@@ -110,6 +111,7 @@
                 </div>
             </div>
             <span class="value" id="totalDisplay">0 <small>м²</small></span>
+            <span class="value-skeleton" id="totalSkeleton"></span>
         </div>
 
         <div class="history-section">
@@ -120,6 +122,39 @@
                     <button class="btn-clear" id="clearAllBtn">✕</button>
                 </div>
             </div>
+            
+            <!-- Скелетон загрузки -->
+            <div class="history-skeleton" id="historySkeleton">
+                <div class="skeleton-item">
+                    <div class="skeleton-left">
+                        <div class="skeleton-line skeleton-line-1"></div>
+                        <div class="skeleton-line skeleton-line-2"></div>
+                    </div>
+                    <div class="skeleton-right">
+                        <div class="skeleton-badge"></div>
+                    </div>
+                </div>
+                <div class="skeleton-item">
+                    <div class="skeleton-left">
+                        <div class="skeleton-line skeleton-line-1"></div>
+                        <div class="skeleton-line skeleton-line-2"></div>
+                    </div>
+                    <div class="skeleton-right">
+                        <div class="skeleton-badge"></div>
+                    </div>
+                </div>
+                <div class="skeleton-item">
+                    <div class="skeleton-left">
+                        <div class="skeleton-line skeleton-line-1"></div>
+                        <div class="skeleton-line skeleton-line-2"></div>
+                    </div>
+                    <div class="skeleton-right">
+                        <div class="skeleton-badge"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Реальный список -->
             <ul class="history-list" id="historyList">
                 <li class="empty-state">📭 История пуста</li>
             </ul>

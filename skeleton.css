@@ -1,0 +1,169 @@
+/* ===== СКЕЛЕТОНЫ ЗАГРУЗКИ ===== */
+
+/* Контейнер скелетона */
+.history-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: skeletonFadeIn 0.2s ease;
+}
+
+/* Элемент скелетона (имитация записи) */
+.skeleton-item {
+    background: var(--bg-history-item);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-light);
+}
+
+.skeleton-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.skeleton-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Линии скелетона */
+.skeleton-line {
+    background: linear-gradient(
+        90deg,
+        var(--bg-count) 0%,
+        var(--border-color) 50%,
+        var(--bg-count) 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 6px;
+    animation: skeletonShimmer 1.5s infinite;
+}
+
+.skeleton-line-1 {
+    width: 60%;
+    height: 14px;
+}
+
+.skeleton-line-2 {
+    width: 35%;
+    height: 10px;
+}
+
+/* Бейдж площади */
+.skeleton-badge {
+    width: 70px;
+    height: 26px;
+    border-radius: 40px;
+    background: linear-gradient(
+        90deg,
+        var(--bg-count) 0%,
+        var(--border-color) 50%,
+        var(--bg-count) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s infinite;
+}
+
+/* Скелетон для общей суммы */
+.value-skeleton {
+    display: none;
+    width: 100px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(
+        90deg,
+        var(--bg-count) 0%,
+        var(--border-color) 50%,
+        var(--bg-count) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s infinite;
+}
+
+/* Состояние загрузки */
+body.loading .total-area .value {
+    display: none;
+}
+
+body.loading .value-skeleton {
+    display: inline-block;
+}
+
+body.loading .history-skeleton {
+    display: flex;
+}
+
+body.loading .history-list {
+    display: none !important;
+}
+
+body:not(.loading) .history-skeleton {
+    display: none;
+}
+
+body:not(.loading) .history-list {
+    display: block;
+}
+
+body:not(.loading) .value-skeleton {
+    display: none;
+}
+
+body:not(.loading) .total-area .value {
+    display: inline;
+}
+
+/* Анимация мерцания */
+@keyframes skeletonShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Анимация появления скелетона */
+@keyframes skeletonFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Плавное появление реального контента */
+.history-list {
+    animation: contentFadeIn 0.3s ease;
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Плавная смена скелетона на контент */
+.total-area .value {
+    animation: valueFadeIn 0.3s ease;
+}
+
+@keyframes valueFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
