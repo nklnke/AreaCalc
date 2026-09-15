@@ -14,7 +14,7 @@ app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 480,
-    height: 900,
+    height: 950,
     resizable: false,
     maximizable: false,
     fullscreenable: false,
