@@ -1,0 +1,101 @@
+/* ===== Базовые стили ===== */
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body,
+.app,
+.header,
+.history-section,
+.total-area {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button,
+input,
+.theme-toggle,
+.precision-btn,
+.btn-add,
+.btn-clear,
+.del-btn,
+.dup-btn,
+.modal-button,
+.edit-btn-cancel,
+.edit-btn-save,
+.multiplier-buttons button,
+.custom-multiplier button,
+.history-list li,
+.total-area,
+.multiplier-section,
+.modal-content {
+    transition: 
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease,
+        opacity 0.2s ease;
+}
+
+body {
+    background: var(--bg-body);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.app {
+    max-width: 480px;
+    width: 100%;
+    background: var(--bg-app);
+    padding: 12px 20px;
+    margin: 0;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Убираем глобальную прокрутку */
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* ===== Адаптив ===== */
+@media (max-width: 420px) {
+    .input-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .input-group {
+        min-width: 100%;
+    }
+    .btn-add {
+        margin-top: 12px;
+    }
+    .multiplier-buttons {
+        gap: 6px;
+    }
+    .multiplier-buttons button {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: 40px;
+    }
+    .app {
+        padding: 16px;
+    }
+}

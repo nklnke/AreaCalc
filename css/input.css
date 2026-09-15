@@ -1,0 +1,82 @@
+/* ===== Поля ввода ===== */
+.input-section {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.input-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    flex: 1;
+    min-width: 80px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.input-group label small {
+    font-weight: 400;
+    color: var(--text-light);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 16px;
+    background: var(--bg-input);
+    outline: none;
+    color: var(--text-primary);
+}
+
+.input-group input:hover {
+    border-color: var(--btn-primary);
+}
+
+.input-group input:focus {
+    border-color: var(--btn-primary);
+    background: var(--bg-app);
+    box-shadow: 0 0 0 3px rgba(45, 122, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.input-group input::placeholder {
+    color: var(--text-lighter);
+}
+
+/* ===== Кнопка Добавить ===== */
+.btn-add {
+    background: var(--btn-primary);
+    border: none;
+    color: var(--text-white);
+    padding: 12px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 16px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(45, 122, 255, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 122, 255, 0.35);
+}
+
+.btn-add:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 8px rgba(45, 122, 255, 0.3);
+}

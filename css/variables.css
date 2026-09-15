@@ -1,0 +1,66 @@
+/* ===== CSS переменные для тем ===== */
+:root {
+    /* Светлая тема (по умолчанию) */
+    --bg-body: #f4f6fa;
+    --bg-app: #ffffff;
+    --bg-input: #fafcff;
+    --bg-total: #eef5ff;
+    --bg-history-item: #f8faff;
+    --bg-multiplier: #f8faff;
+    --bg-count: #eef2f7;
+    --bg-badge: #e5ecf9;
+    --bg-modal: #ffffff;
+    --bg-overlay: rgba(0, 0, 0, 0.5);
+    --bg-header: #ffffff;
+    --bg-theme-btn: #f8faff;
+    
+    --text-primary: #0b1b32;
+    --text-secondary: #1d3557;
+    --text-muted: #6c7a8f;
+    --text-light: #8a9bb2;
+    --text-lighter: #b0bcca;
+    --text-white: #ffffff;
+    
+    --border-color: #dce1eb;
+    --border-light: #e8edf6;
+    
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --shadow-modal: rgba(0, 0, 0, 0.3);
+
+    --btn-primary: #2d7aff;
+    --btn-primary-hover: #1a5fd9;
+    --btn-primary-active: #1a5fd9;
+}
+
+/* Тёмная тема */
+[data-theme="dark"] {
+    --bg-body: #0d1117;
+    --bg-app: #161b22;
+    --bg-input: #0d1117;
+    --bg-total: #1c2333;
+    --bg-history-item: #1c2333;
+    --bg-multiplier: #1c2333;
+    --bg-count: #2d3748;
+    --bg-badge: #2d3748;
+    --bg-modal: #1c2333;
+    --bg-overlay: rgba(0, 0, 0, 0.7);
+    --bg-header: #161b22;
+    --bg-theme-btn: #2d3748;
+    
+    --text-primary: #e6edf3;
+    --text-secondary: #c9d1d9;
+    --text-muted: #8b949e;
+    --text-light: #6e7681;
+    --text-lighter: #484f58;
+    --text-white: #ffffff;
+    
+    --border-color: #30363d;
+    --border-light: #21262d;
+    
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --shadow-modal: rgba(0, 0, 0, 0.7);
+    
+    --btn-primary: #2d7aff;
+    --btn-primary-hover: #4a8aff;
+    --btn-primary-active: #1a5fd9;
+}

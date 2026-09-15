@@ -1,0 +1,77 @@
+/* ===== Шапка ===== */
+.header {
+    flex-shrink: 0;
+    background: var(--bg-app);
+}
+
+.header-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+    width: 100%;
+    min-height: 48px;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    grid-column: 1 / 2;
+    justify-self: start;
+    align-self: center;
+}
+
+.theme-toggle {
+    grid-column: 2 / 3;
+    justify-self: end;
+    align-self: center;
+    
+    background: var(--bg-theme-btn);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    outline: none;
+    user-select: none;
+    padding: 0;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+    background: var(--bg-total);
+}
+
+.theme-toggle:active {
+    transform: scale(0.9) rotate(0deg);
+}
+
+.theme-toggle.changing {
+    animation: themeRotate 0.5s ease;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.subtitle span {
+    background: var(--bg-count);
+    padding: 2px 12px;
+    border-radius: 30px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}

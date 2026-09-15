@@ -1,0 +1,80 @@
+/* ===== Общая площадь ===== */
+.total-area {
+    background: var(--bg-total);
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin: 24px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.total-area span:first-child {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.total-area .value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.total-area .value small {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-light);
+    margin-left: 4px;
+}
+
+.total-area .value.updated {
+    animation: valueUpdate 0.5s ease;
+}
+
+/* Переключатель точности */
+.total-area-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.precision-toggle {
+    display: flex;
+    background: var(--bg-count);
+    border-radius: 20px;
+    padding: 2px;
+    gap: 2px;
+    width: fit-content;
+}
+
+.precision-btn {
+    background: transparent;
+    border: none;
+    border-radius: 18px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.precision-btn.active {
+    background: var(--bg-app);
+    color: var(--btn-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    animation: precisionPop 0.3s ease;
+}
+
+.precision-btn:hover:not(.active) {
+    color: var(--text-secondary);
+    background: var(--bg-app);
+}
+
+.precision-btn:active {
+    transform: scale(0.95);
+}

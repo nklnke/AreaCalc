@@ -1,0 +1,107 @@
+/* ===== Множитель ===== */
+.multiplier-section {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-multiplier);
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    display: none;
+    flex-shrink: 0;
+}
+
+.multiplier-section.visible {
+    display: block;
+    animation: multiplierSlideIn 0.3s ease;
+}
+
+.multiplier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.last-item {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.multiplier-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.multiplier-buttons button {
+    background: var(--bg-app);
+    border: 1.5px solid var(--border-color);
+    border-radius: 30px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    min-width: 48px;
+    position: relative;
+}
+
+.multiplier-buttons button:hover {
+    background: var(--btn-primary);
+    color: var(--text-white);
+    border-color: var(--btn-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(45, 122, 255, 0.25);
+}
+
+.multiplier-buttons button:active {
+    transform: scale(0.92);
+    box-shadow: none;
+}
+
+.custom-multiplier {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 4px;
+}
+
+.custom-multiplier input {
+    width: 60px;
+    padding: 8px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 30px;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+.custom-multiplier input:focus {
+    border-color: var(--btn-primary);
+}
+
+.custom-multiplier button {
+    min-width: 40px;
+    padding: 8px 12px;
+    background: var(--btn-primary);
+    color: var(--text-white);
+    border: 1.5px solid var(--btn-primary);
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.custom-multiplier button:hover {
+    background: var(--btn-primary-hover);
+    transform: scale(1.05);
+}
+
+.custom-multiplier button:active {
+    transform: scale(0.9);
+}

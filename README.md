@@ -1,6 +1,6 @@
 # 📐 Калькулятор площадей
 
-![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.5.1-blue.svg)
 ![Electron](https://img.shields.io/badge/Electron-28.0.0-47848f.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
@@ -111,34 +111,113 @@ npm run build:linux
 ```
 area-calculator/
 │
-├── 📄 package.json          # Конфигурация и зависимости
-├── 📄 main.js               # Главный процесс Electron
-├── 📄 preload.js            # Мост между процессами
-├── 📄 renderer.js           # Логика приложения
-├── 📄 index.html            # Интерфейс
-├── 📄 styles.css            # Стили (светлая/тёмная тема)
-├── 🖼️ icon.ico              # Иконка приложения
-├── 📄 README.md             # Документация
+├── 📄 main.js                    # Главный процесс Electron
+├── 📄 preload.js                 # Мост IPC между процессами
+├── 📄 index.html                 # HTML-разметка интерфейса
+├── 📄 package.json               # Конфигурация и зависимости
+├── 🖼️ icon.ico                   # Иконка приложения
+├── 📄 README.md                  # Документация
 │
-└── 📁 dist/                 # Папка со сборками (создаётся автоматически)
-    ├── AreaCalculator_portable.exe
-    ├── Area Calculator Setup.exe
-    └── ...
+├── 📁 css/                       # Стили (модульные)
+│   ├── 📄 variables.css          # CSS-переменные (светлая/тёмная тема)
+│   ├── 📄 base.css               # Базовые стили, .app, body, адаптив
+│   ├── 📄 header.css             # Шапка, кнопка смены темы
+│   ├── 📄 input.css              # Поля ввода, кнопка «Добавить»
+│   ├── 📄 multiplier.css         # Блок множителя
+│   ├── 📄 total.css              # Общая площадь, переключатель точности
+│   ├── 📄 history.css            # История записей
+│   ├── 📄 modal.css              # Модальные окна (ошибка, редактирование)
+│   ├── 📄 skeleton.css           # Скелетон загрузки
+│   └── 📄 animations.css         # Все анимации
+│
+├── 📁 js/                        # Логика (модульная)
+│   ├── 📄 utils.js               # Утилиты (escapeHtml, parseNumber, formatTime)
+│   ├── 📄 theme.js               # Управление темой
+│   ├── 📄 precision.js           # Точность округления
+│   ├── 📄 data.js                # Загрузка/сохранение данных
+│   ├── 📄 skeleton.js            # Скелетон загрузки
+│   ├── 📄 modal.js               # Кастомные модальные окна
+│   ├── 📄 history.js             # История: рендер, добавление, удаление, дублирование
+│   ├── 📄 edit.js                # Редактирование записей
+│   ├── 📄 input-filter.js        # Фильтр ввода (только цифры)
+│   └── 📄 main.js                # Точка входа, обработчики событий
+│
+└── 📁 dist/                      # Папка со сборками (создаётся автоматически)
+    ├── AreaCalc.exe              # Портативная версия
+    └── AreaCalc Setup.exe        # Установщик
 ```
 
 ### 📋 Описание файлов
 
+#### 🔧 Основные
+
 | Файл | Назначение |
 |------|------------|
-| `package.json` | Зависимости проекта, скрипты сборки |
-| `main.js` | Главный процесс, управление окнами, IPC |
+| `main.js` | Главный процесс Electron, управление окнами, IPC |
 | `preload.js` | Мост между main и renderer процессами |
-| `renderer.js` | Вся логика приложения: расчёты, история, UI |
 | `index.html` | HTML-разметка интерфейса |
-| `styles.css` | Все стили с поддержкой тёмной темы |
-| `icon.ico` | Иконка приложения (256x256) |
+| `package.json` | Зависимости проекта, скрипты сборки |
+| `icon.ico` | Иконка приложения (256×256) |
 
----
+#### 🎨 CSS (папка `css/`)
+
+| Файл | Назначение |
+|------|------------|
+| `variables.css` | CSS-переменные для светлой и тёмной темы |
+| `base.css` | Базовые стили, контейнер `.app`, глобальные правила, адаптив |
+| `header.css` | Шапка с заголовком и кнопкой смены темы |
+| `input.css` | Поля ввода ширины/высоты и кнопка «Добавить» |
+| `multiplier.css` | Блок «Умножить последний» с кнопками ×2–×N |
+| `total.css` | Блок общей площади и переключатель точности |
+| `history.css` | Список истории, записи, кнопки действий |
+| `modal.css` | Модальные окна: ошибка и редактирование |
+| `skeleton.css` | Анимация загрузки (мерцающие заглушки) |
+| `animations.css` | Все `@keyframes` и анимации нажатия |
+
+#### ⚙️ JavaScript (папка `js/`)
+
+| Модуль | Назначение |
+|--------|------------|
+| `utils.js` | Утилиты: `escapeHtml`, `parseNumber`, `formatTime` |
+| `theme.js` | Переключение и сохранение темы, автоопределение системной |
+| `precision.js` | Переключатель точности округления (2, 3 или 4 знака) |
+| `data.js` | Обёртка над IPC: загрузка, сохранение, добавление, удаление |
+| `skeleton.js` | Показ/скрытие скелетона при загрузке |
+| `modal.js` | Кастомное модальное окно (замена `alert`) |
+| `history.js` | Отрисовка, добавление, удаление, дублирование, множитель |
+| `edit.js` | Редактирование записей: ширина, высота, множитель, заметка |
+| `input-filter.js` | Разрешает только цифры и один разделитель (`.` или `,`) |
+| `main.js` | Точка входа: инициализация модулей и обработчиков событий |
+
+### 🔗 Порядок загрузки
+
+**CSS** (важен порядок — переменные должны быть первыми):
+
+```
+variables → base → header → input → multiplier → total → history → modal → skeleton → animations
+```
+
+**JS** (важен порядок — утилиты первыми, точка входа последней):
+
+```
+utils → theme → precision → data → skeleton → modal → history → edit → input-filter → main
+```
+
+### 🧩 Взаимодействие модулей
+
+Каждый модуль экспортирует объект в глобальную область (`window.*`):
+
+| Модуль | Доступ | Что даёт |
+|--------|--------|----------|
+| `Utils` | `window.Utils` | `parseNumber()`, `escapeHtml()`, `formatTime()` |
+| `Theme` | `window.Theme` | `init()`, `load()`, `toggle()` |
+| `Precision` | `window.Precision` | `init()`, `load()`, `get()`, `set()` |
+| `Data` | `window.Data` | `load()`, `save()`, `get()`, `add()`, `removeById()`, `clear()` |
+| `Skeleton` | `window.Skeleton` | `init()`, `show()`, `hide()` |
+| `Modal` | `window.Modal` | `init()`, `show()`, `showError()` |
+| `History` | `window.History` | `init()`, `render()`, `add()`, `multiplyLast()`, `deleteById()`, `duplicate()`, `clearAll()` |
+| `Edit` | `window.Edit` | `init()`, `open()`, `save()`, `close()` |
+| `InputFilter` | `window.InputFilter` | `setup()`, `setupAll()` |
 
 ## 🗄️ Хранение данных
 
@@ -270,6 +349,10 @@ npm run build:win
 ---
 
 ## 🗓️ История версий
+
+### v1.5.1 (09.2026)
+
+- Изменена структура проекта: js и css файлы разбиты на модули
 
 ### v1.5.0 (09.2026)
 
