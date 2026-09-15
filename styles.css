@@ -1273,3 +1273,68 @@ button:active {
     50% { transform: rotate(180deg) scale(1.2); }
     to { transform: rotate(360deg) scale(1); }
 }
+
+/* ===== Поле заметки ===== */
+.edit-field textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    outline: none;
+    transition: 0.2s;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 50px;
+    max-height: 120px;
+    line-height: 1.4;
+}
+
+.edit-field textarea:focus {
+    border-color: var(--btn-primary);
+    background: var(--bg-app);
+    box-shadow: 0 0 0 3px rgba(45, 122, 255, 0.15);
+}
+
+.edit-field textarea:hover {
+    border-color: var(--btn-primary);
+}
+
+.edit-field textarea::placeholder {
+    color: var(--text-lighter);
+}
+
+/* Отображение заметки в записи истории */
+.history-list li .item-note {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 4px 8px;
+    background: var(--bg-count);
+    border-radius: 8px;
+    margin-top: 4px;
+    display: inline-block;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+    border-left: 3px solid var(--btn-primary);
+}
+
+/* Анимация появления заметки */
+.history-list li .item-note {
+    animation: noteFadeIn 0.3s ease;
+}
+
+@keyframes noteFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

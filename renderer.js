@@ -21,6 +21,7 @@
     const editPreview = document.getElementById('editPreview');
     const editCancelBtn = document.getElementById('editCancelBtn');
     const editSaveBtn = document.getElementById('editSaveBtn');
+    const editNote = document.getElementById('editNote');
 
     // ===== КАСТОМНОЕ МОДАЛЬНОЕ ОКНО =====
     const modal = document.getElementById('customModal');
@@ -297,6 +298,13 @@
         }
     }
 
+    // Экранирование HTML-символов (защита от XSS)
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     // Отрисовка интерфейса
     function render() {
         // Защита от параллельных вызовов
@@ -335,11 +343,16 @@
                 }
                 
                 const isNew = newItemIds.has(item.id);
+                const noteHtml = item.note 
+                    ? `<div class="item-note">📝 ${escapeHtml(item.note)}</div>` 
+                    : '';
+                
                 html += `
                     <li data-id="${item.id}" class="${isNew ? 'new' : ''}">
                         <div class="item-info">
                             <div class="item-dims">${dimsText}</div>
                             <div class="item-time">${timeStr}</div>
+                            ${noteHtml}
                         </div>
                         <div class="item-actions">
                             <span class="area-badge">${displayArea} м²</span>
@@ -537,11 +550,12 @@
             height: original.height,
             multiplier: original.multiplier || 1,
             isMultiplied: original.isMultiplied || false,
+            note: original.note || '', // копируем заметку
             timestamp: Date.now()
         };
         
         history.splice(index + 1, 0, duplicate);
-        newItemIds.add(duplicate.id); // ← помечаем как новую
+        newItemIds.add(duplicate.id); // помечаем как новую
         
         await saveData();
         
@@ -586,12 +600,17 @@
             dimsText += ` <span class="multiplier-badge">×${item.multiplier}</span>`;
         }
         
+        const noteHtml = item.note 
+            ? `<div class="item-note">📝 ${escapeHtml(item.note)}</div>` 
+            : '';
+        
         const li = document.createElement('li');
         li.dataset.id = item.id;
         li.innerHTML = `
             <div class="item-info">
                 <div class="item-dims">${dimsText}</div>
                 <div class="item-time">${timeStr}</div>
+                ${noteHtml}
             </div>
             <div class="item-actions">
                 <span class="area-badge">${displayArea} м²</span>
@@ -653,6 +672,7 @@
         editWidth.value = item.width;
         editHeight.value = item.height;
         editMultiplier.value = item.multiplier || 1;
+        editNote.value = item.note || '';
 
         // Обновляем превью
         updateEditPreview();
@@ -684,6 +704,7 @@
         const w = parseFloat(editWidth.value);
         const h = parseFloat(editHeight.value);
         const m = parseFloat(editMultiplier.value);
+        const note = editNote.value.trim();
 
         // Валидация
         if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
@@ -712,6 +733,13 @@
             history[index].isMultiplied = false;
         }
 
+        // Сохраняем заметку (если не пустая)
+        if (note) {
+            history[index].note = note;
+        } else {
+            delete history[index].note;
+        }
+
         // Обновляем время
         history[index].timestamp = Date.now();
 
@@ -735,7 +763,7 @@
     editCancelBtn.addEventListener('click', closeEditModal);
     editSaveBtn.addEventListener('click', saveEdit);
 
-    // Enter — сохранить, Esc — отмена
+    // Enter — сохранить (только в input, не в textarea), Esc — отмена
     [editWidth, editHeight, editMultiplier].forEach(input => {
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -746,6 +774,19 @@
                 closeEditModal();
             }
         });
+    });
+
+    // Для textarea — только Esc закрывает (Enter переносит строку)
+    editNote.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            closeEditModal();
+        }
+        // Ctrl+Enter — сохранить
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            saveEdit();
+        }
     });
 
     // Закрытие по клику вне окна
