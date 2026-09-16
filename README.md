@@ -231,33 +231,43 @@ utils → theme → precision → data → skeleton → modal → history → ed
 
 ### 📊 Формат данных
 
+Файл `areas_history.json` содержит **массив объектов**, где каждый объект — одна запись:
+
 ```json
 [
   {
     "id": 1698765432100,
     "width": 2000,
     "height": 1500,
-    "area": 3.00,
-    "timestamp": 1698765432100,
-    "isMultiplied": true,
     "multiplier": 3,
-    "originalArea": 1.00
+    "isMultiplied": true,
+    "note": "Окно кухня",
+    "timestamp": 1698765432100
+  },
+  {
+    "id": 1698765432101,
+    "width": 1000,
+    "height": 1000,
+    "timestamp": 1698765432101,
+    "isMultiplied": false
   }
 ]
 ```
 
 ### 📖 Поля данных
 
-| Поле | Тип | Описание |
-|------|-----|----------|
-| `id` | number | Уникальный идентификатор |
-| `width` | number | Ширина в мм |
-| `height` | number | Высота в мм |
-| `area` | number | Площадь в м² |
-| `timestamp` | number | Время добавления (Unix timestamp) |
-| `isMultiplied` | boolean | Создано ли через множитель |
-| `multiplier` | number | Значение множителя |
-| `originalArea` | number | Исходная площадь (до умножения) |
+| Поле | Тип | Обязательное | Описание |
+|------|-----|:---:|----------|
+| `id` | `number` | ✅ | Уникальный идентификатор записи (генерируется автоматически) |
+| `width` | `number` | ✅ | Ширина в миллиметрах |
+| `height` | `number` | ✅ | Высота в миллиметрах |
+| `timestamp` | `number` | ✅ | Время создания записи (Unix timestamp, миллисекунды) |
+| `multiplier` | `number` | ❌ | Значение множителя (если применялся) |
+| `isMultiplied` | `boolean` | ❌ | `true`, если запись создана через множитель |
+| `note` | `string` | ❌ | Текстовая заметка к записи |
+
+> 💡 **Площадь не хранится в файле** — она вычисляется при отображении по формуле:
+> `площадь (м²) = width × height / 1 000 000 × multiplier`
 
 ---
 
