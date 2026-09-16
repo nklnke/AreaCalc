@@ -122,6 +122,7 @@ area-calculator/
 ├── 📁 css/                       # Стили (модульные)
 │   ├── 📄 variables.css          # CSS-переменные (светлая/тёмная тема)
 │   ├── 📄 base.css               # Базовые стили, .app, body, адаптив
+│   ├── 📄 layout.css             # Двухколоночная компоновка
 │   ├── 📄 header.css             # Шапка, кнопка смены темы
 │   ├── 📄 input.css              # Поля ввода, кнопка «Добавить»
 │   ├── 📄 multiplier.css         # Блок множителя
@@ -129,6 +130,7 @@ area-calculator/
 │   ├── 📄 history.css            # История записей
 │   ├── 📄 modal.css              # Модальные окна (ошибка, редактирование)
 │   ├── 📄 skeleton.css           # Скелетон загрузки
+│   ├── 📄 export.css             # Стили экспорта/импорта
 │   └── 📄 animations.css         # Все анимации
 │
 ├── 📁 js/                        # Логика (модульная)
@@ -141,6 +143,7 @@ area-calculator/
 │   ├── 📄 history.js             # История: рендер, добавление, удаление, дублирование
 │   ├── 📄 edit.js                # Редактирование записей
 │   ├── 📄 input-filter.js        # Фильтр ввода (только цифры)
+│   ├── 📄 export.js              # Экспорт/импорт данных (CSV, JSON)
 │   └── 📄 main.js                # Точка входа, обработчики событий
 │
 └── 📁 dist/                      # Папка со сборками (создаётся автоматически)
@@ -166,6 +169,7 @@ area-calculator/
 |------|------------|
 | `variables.css` | CSS-переменные для светлой и тёмной темы |
 | `base.css` | Базовые стили, контейнер `.app`, глобальные правила, адаптив |
+| `layout.css` | Двухколоночная компоновка (левая/правая колонка) |
 | `header.css` | Шапка с заголовком и кнопкой смены темы |
 | `input.css` | Поля ввода ширины/высоты и кнопка «Добавить» |
 | `multiplier.css` | Блок «Умножить последний» с кнопками ×2–×N |
@@ -173,6 +177,7 @@ area-calculator/
 | `history.css` | Список истории, записи, кнопки действий |
 | `modal.css` | Модальные окна: ошибка и редактирование |
 | `skeleton.css` | Анимация загрузки (мерцающие заглушки) |
+| `export.css` | Стили кнопок экспорта/импорта, меню и диалога выбора |
 | `animations.css` | Все `@keyframes` и анимации нажатия |
 
 #### ⚙️ JavaScript (папка `js/`)
@@ -188,6 +193,7 @@ area-calculator/
 | `history.js` | Отрисовка, добавление, удаление, дублирование, множитель |
 | `edit.js` | Редактирование записей: ширина, высота, множитель, заметка |
 | `input-filter.js` | Разрешает только цифры и один разделитель (`.` или `,`) |
+| `export.js` | Экспорт в CSV/JSON и импорт из JSON |
 | `main.js` | Точка входа: инициализация модулей и обработчиков событий |
 
 ### 🔗 Порядок загрузки
@@ -195,13 +201,13 @@ area-calculator/
 **CSS** (важен порядок — переменные должны быть первыми):
 
 ```
-variables → base → header → input → multiplier → total → history → modal → skeleton → animations
+variables → base → layout → header → input → multiplier → total → history → modal → skeleton → export → animations
 ```
 
 **JS** (важен порядок — утилиты первыми, точка входа последней):
 
 ```
-utils → theme → precision → data → skeleton → modal → history → edit → input-filter → main
+utils → theme → precision → data → skeleton → modal → history → edit → input-filter → export → main
 ```
 
 ### 🧩 Взаимодействие модулей
@@ -213,12 +219,13 @@ utils → theme → precision → data → skeleton → modal → history → ed
 | `Utils` | `window.Utils` | `parseNumber()`, `escapeHtml()`, `formatTime()` |
 | `Theme` | `window.Theme` | `init()`, `load()`, `toggle()` |
 | `Precision` | `window.Precision` | `init()`, `load()`, `get()`, `set()` |
-| `Data` | `window.Data` | `load()`, `save()`, `get()`, `add()`, `removeById()`, `clear()` |
+| `Data` | `window.Data` | `load()`, `save()`, `get()`, `set()`, `add()`, `removeById()`, `clear()` |
 | `Skeleton` | `window.Skeleton` | `init()`, `show()`, `hide()` |
 | `Modal` | `window.Modal` | `init()`, `show()`, `showError()` |
 | `History` | `window.History` | `init()`, `render()`, `add()`, `multiplyLast()`, `deleteById()`, `duplicate()`, `clearAll()` |
 | `Edit` | `window.Edit` | `init()`, `open()`, `save()`, `close()` |
 | `InputFilter` | `window.InputFilter` | `setup()`, `setupAll()` |
+| `Export` | `window.Export` | `init()`, `exportCSV()`, `exportJSON()` |
 
 ## 🗄️ Хранение данных
 
