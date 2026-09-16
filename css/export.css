@@ -1,0 +1,261 @@
+/* ===== Кнопки экспорта/импорта в шапке истории ===== */
+.btn-export,
+.btn-import {
+    background: none;
+    border: none;
+    color: var(--text-lighter);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 30px;
+    transition: 0.15s;
+    line-height: 1;
+}
+
+.btn-export:hover {
+    background: rgba(45, 122, 255, 0.1);
+    color: var(--btn-primary);
+    transform: scale(1.15);
+}
+
+.btn-import:hover {
+    background: rgba(45, 200, 100, 0.1);
+    color: #2dc864;
+    transform: scale(1.15);
+}
+
+.btn-export:active,
+.btn-import:active {
+    transform: scale(0.9);
+}
+
+/* ===== Меню экспорта (модальное окно) ===== */
+#exportMenu.modal-overlay {
+    animation: modalFadeIn 0.2s ease;
+}
+
+.export-menu-content {
+    background: var(--bg-modal);
+    border-radius: 24px;
+    padding: 28px 24px 20px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 20px 60px var(--shadow-modal);
+    animation: modalPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.export-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+}
+
+.export-menu-icon {
+    font-size: 28px;
+}
+
+.export-menu-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.export-menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.export-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--bg-count);
+    border: 1.5px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s;
+    font-family: inherit;
+    width: 100%;
+}
+
+.export-menu-item:hover {
+    background: var(--bg-app);
+    border-color: var(--btn-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(45, 122, 255, 0.15);
+}
+
+.export-menu-item:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.export-item-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.export-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.export-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.export-item-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.export-menu-cancel {
+    width: 100%;
+    padding: 12px;
+    margin-top: 16px;
+    background: none;
+    border: none;
+    border-radius: 40px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.15s;
+    font-family: inherit;
+}
+
+.export-menu-cancel:hover {
+    background: var(--bg-count);
+    color: var(--text-secondary);
+}
+
+.export-menu-cancel:active {
+    transform: scale(0.97);
+}
+
+/* ===== Диалог выбора при импорте (Заменить / Добавить) ===== */
+.import-choice-content {
+    background: var(--bg-modal);
+    border-radius: 24px;
+    padding: 28px 24px 20px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 60px var(--shadow-modal);
+    animation: modalPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.import-choice-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.import-choice-icon {
+    font-size: 42px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.import-choice-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.import-choice-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.import-choice-info strong {
+    color: var(--btn-primary);
+    font-weight: 700;
+}
+
+.import-choice-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.import-choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-count);
+    border: 1.5px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s;
+    font-family: inherit;
+    width: 100%;
+}
+
+.import-choice-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.import-choice-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.import-choice-btn .choice-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.import-choice-btn .choice-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.import-choice-btn .choice-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.import-choice-btn .choice-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.import-choice-btn.replace:hover {
+    background: rgba(209, 59, 59, 0.08);
+    border-color: #d13b3b;
+}
+
+.import-choice-btn.append:hover {
+    background: rgba(45, 200, 100, 0.08);
+    border-color: #2dc864;
+}
+
+.import-choice-btn.cancel:hover {
+    background: var(--bg-count);
+    border-color: var(--text-lighter);
+}
+
+/* ===== Адаптив ===== */
+@media (max-width: 420px) {
+    .export-menu-content,
+    .import-choice-content {
+        padding: 24px 20px 16px;
+    }
+    
+    .export-menu-title,
+    .import-choice-title {
+        font-size: 16px;
+    }
+}

@@ -8,6 +8,7 @@
     History.init();
     Edit.init();
     InputFilter.setupAll();
+    Export.init();
     
     // Показываем скелетон
     Skeleton.show();
