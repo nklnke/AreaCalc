@@ -1,0 +1,67 @@
+/* ===== Двухколоночная компоновка ===== */
+.main-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ===== Левая колонка ===== */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    min-height: 0;
+}
+
+/* Скрываем скроллбар в левой колонке */
+.left-column::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.left-column {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* ===== Правая колонка (история) ===== */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-total);
+    border-radius: 20px;
+    padding: 16px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.right-column .history-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ===== Адаптив ===== */
+@media (max-width: 850px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .right-column {
+        max-height: 300px;
+    }
+    
+    .app {
+        padding: 12px 16px;
+    }
+}

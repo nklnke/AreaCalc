@@ -49,6 +49,9 @@ window.History = (function() {
         const last = getLastItem();
         const precision = Precision.get();
         
+        // Блок множителя ВСЕГДА видим
+        multiplierSection.classList.add('visible');
+        
         if (last) {
             const w = Math.round(last.width);
             const h = Math.round(last.height);
@@ -59,10 +62,14 @@ window.History = (function() {
                 infoText = `${w}×${h} мм × ${last.multiplier} = ${displayArea} м²`;
             }
             lastItemInfo.textContent = infoText;
-            multiplierSection.classList.add('visible');
+            
+            // Активируем блок
+            multiplierSection.classList.remove('disabled');
         } else {
-            lastItemInfo.textContent = '—';
-            multiplierSection.classList.remove('visible');
+            lastItemInfo.textContent = 'Сначала добавьте запись';
+            
+            // Приглушаем блок
+            multiplierSection.classList.add('disabled');
         }
     }
     

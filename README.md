@@ -1,6 +1,6 @@
 # 📐 Калькулятор площадей
 
-![Version](https://img.shields.io/badge/version-1.5.1-blue.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![Electron](https://img.shields.io/badge/Electron-28.0.0-47848f.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
@@ -349,6 +349,10 @@ npm run build:win
 ---
 
 ## 🗓️ История версий
+
+### v2.0.0 (09.2026)
+
+- Добавлена двухколоночная компоновка
 
 ### v1.5.1 (09.2026)
 

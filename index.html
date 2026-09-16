@@ -6,6 +6,7 @@
     <title>Area Calculator</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/input.css">
     <link rel="stylesheet" href="css/multiplier.css">
@@ -77,96 +78,104 @@
             </div>
         </div>
 
-        <div class="input-section">
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Ширина <small>(мм)</small></label>
-                    <input type="text" id="widthInput" inputmode="decimal" placeholder="1000">
+        <div class="main-layout">
+            <!-- ЛЕВАЯ КОЛОНКА -->
+            <div class="left-column">
+                <div class="input-section">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Ширина <small>(мм)</small></label>
+                            <input type="text" id="widthInput" inputmode="decimal" placeholder="1000">
+                        </div>
+                        <div class="input-group">
+                            <label>Высота <small>(мм)</small></label>
+                            <input type="text" id="heightInput" inputmode="decimal" placeholder="1000">
+                        </div>
+                    </div>
+                    <button class="btn-add" id="addBtn">➕ Добавить</button>
                 </div>
-                <div class="input-group">
-                    <label>Высота <small>(мм)</small></label>
-                    <input type="text" id="heightInput" inputmode="decimal" placeholder="1000">
-                </div>
-            </div>
-            <button class="btn-add" id="addBtn">➕ Добавить</button>
-        </div>
 
-        <div class="multiplier-section" id="multiplierSection">
-            <div class="multiplier-header">
-                <span>🔁 Умножить последний</span>
-                <span class="last-item" id="lastItemInfo">—</span>
+                <div class="multiplier-section" id="multiplierSection">
+                    <div class="multiplier-header">
+                        <span>🔁 Умножить последний</span>
+                        <span class="last-item" id="lastItemInfo">—</span>
+                    </div>
+                    <div class="multiplier-buttons">
+                        <button data-mult="2">×2</button>
+                        <button data-mult="3">×3</button>
+                        <button data-mult="4">×4</button>
+                        <button data-mult="5">×5</button>
+                        <div class="custom-multiplier">
+                            <input type="text" id="customMultInput" inputmode="decimal" placeholder="xN">
+                            <button id="applyCustomMult">×</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="total-area">
+                    <div class="total-area-left">
+                        <span>📊 Общая площадь</span>
+                        <div class="precision-toggle">
+                            <button class="precision-btn active" data-precision="2" title="Округление до сотых">0.00</button>
+                            <button class="precision-btn" data-precision="3" title="Округление до тысячных">0.000</button>
+                            <button class="precision-btn" data-precision="4" title="Округление до десятитысячных">0.0000</button>
+                        </div>
+                    </div>
+                    <span class="value" id="totalDisplay">0 <small>м²</small></span>
+                </div>
+
+                <div class="footer-hint">💡 1 м² = 1 000 000 мм²</div>
             </div>
-            <div class="multiplier-buttons">
-                <button data-mult="2">×2</button>
-                <button data-mult="3">×3</button>
-                <button data-mult="4">×4</button>
-                <button data-mult="5">×5</button>
-                <div class="custom-multiplier">
-                    <input type="text" id="customMultInput" inputmode="decimal" placeholder="xN">
-                    <button id="applyCustomMult">×</button>
+
+            <!-- ПРАВАЯ КОЛОНКА -->
+            <div class="right-column">
+                <div class="history-section">
+                    <div class="history-header">
+                        <h3>📋 История</h3>
+                        <div class="history-controls">
+                            <span class="count" id="itemsCount">0</span>
+                            <button class="btn-clear" id="clearAllBtn">✕</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Скелетон загрузки -->
+                    <div class="history-skeleton" id="historySkeleton">
+                        <div class="skeleton-item">
+                            <div class="skeleton-left">
+                                <div class="skeleton-line skeleton-line-1"></div>
+                                <div class="skeleton-line skeleton-line-2"></div>
+                            </div>
+                            <div class="skeleton-right">
+                                <div class="skeleton-badge"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-left">
+                                <div class="skeleton-line skeleton-line-1"></div>
+                                <div class="skeleton-line skeleton-line-2"></div>
+                            </div>
+                            <div class="skeleton-right">
+                                <div class="skeleton-badge"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-left">
+                                <div class="skeleton-line skeleton-line-1"></div>
+                                <div class="skeleton-line skeleton-line-2"></div>
+                            </div>
+                            <div class="skeleton-right">
+                                <div class="skeleton-badge"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Реальный список -->
+                    <ul class="history-list" id="historyList" style="display: none;">
+                        <li class="empty-state">📭 История пуста</li>
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <div class="total-area">
-            <div class="total-area-left">
-                <span>📊 Общая площадь</span>
-                <div class="precision-toggle">
-                    <button class="precision-btn active" data-precision="2" title="Округление до сотых">0.00</button>
-                    <button class="precision-btn" data-precision="3" title="Округление до тысячных">0.000</button>
-                    <button class="precision-btn" data-precision="4" title="Округление до десятитысячных">0.0000</button>
-                </div>
-            </div>
-            <span class="value" id="totalDisplay">0 <small>м²</small></span>
-        </div>
-
-        <div class="history-section">
-            <div class="history-header">
-                <h3>📋 История</h3>
-                <div class="history-controls">
-                    <span class="count" id="itemsCount">0</span>
-                    <button class="btn-clear" id="clearAllBtn">✕</button>
-                </div>
-            </div>
-            
-            <!-- Скелетон загрузки -->
-            <div class="history-skeleton" id="historySkeleton">
-                <div class="skeleton-item">
-                    <div class="skeleton-left">
-                        <div class="skeleton-line skeleton-line-1"></div>
-                        <div class="skeleton-line skeleton-line-2"></div>
-                    </div>
-                    <div class="skeleton-right">
-                        <div class="skeleton-badge"></div>
-                    </div>
-                </div>
-                <div class="skeleton-item">
-                    <div class="skeleton-left">
-                        <div class="skeleton-line skeleton-line-1"></div>
-                        <div class="skeleton-line skeleton-line-2"></div>
-                    </div>
-                    <div class="skeleton-right">
-                        <div class="skeleton-badge"></div>
-                    </div>
-                </div>
-                <div class="skeleton-item">
-                    <div class="skeleton-left">
-                        <div class="skeleton-line skeleton-line-1"></div>
-                        <div class="skeleton-line skeleton-line-2"></div>
-                    </div>
-                    <div class="skeleton-right">
-                        <div class="skeleton-badge"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Реальный список -->
-            <ul class="history-list" id="historyList" style="display: none;">
-                <li class="empty-state">📭 История пуста</li>
-            </ul>
-        </div>
-
-        <div class="footer-hint">💡 1 м² = 1 000 000 мм²</div>
     </div>
     
     <script src="js/utils.js"></script>

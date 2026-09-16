@@ -51,10 +51,10 @@ body {
 }
 
 .app {
-    max-width: 480px;
+    max-width: 1000px;
     width: 100%;
     background: var(--bg-app);
-    padding: 12px 20px;
+    padding: 16px 24px;
     margin: 0;
     height: 100vh;
     max-height: 100vh;

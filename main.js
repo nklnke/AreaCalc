@@ -4,7 +4,6 @@ const fs = require('fs');
 
 let mainWindow;
 
-// ===== ОПТИМИЗАЦИЯ ЗАПУСКА =====
 // Отключаем ненужные функции Chromium для ускорения
 app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion');
 app.commandLine.appendSwitch('disable-background-timer-throttling');
@@ -13,10 +12,12 @@ app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 480,
+    width: 1000,
     height: 950,
-    resizable: false,
-    maximizable: false,
+    minWidth: 800,
+    minHeight: 600,
+    resizable: true,
+    maximizable: true,
     fullscreenable: false,
     icon: path.join(__dirname, 'icon.ico'),
     webPreferences: {
@@ -34,7 +35,7 @@ function createWindow() {
   // Удаляем стандартное меню полностью
   mainWindow.setMenu(null);
 
-  // Открываем DevTools для отладки (можно закомментировать)
+  // DevTools для отладки
   // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {

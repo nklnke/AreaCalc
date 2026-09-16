@@ -5,13 +5,26 @@
     background: var(--bg-multiplier);
     border-radius: 16px;
     border: 1px solid var(--border-light);
-    display: none;
+    display: block; /* ← всегда видим */
     flex-shrink: 0;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    position: relative;
 }
 
-.multiplier-section.visible {
-    display: block;
-    animation: multiplierSlideIn 0.3s ease;
+/* Приглушённое состояние — когда нет записей */
+.multiplier-section.disabled {
+    opacity: 0.5;
+    filter: grayscale(0.6);
+    pointer-events: none;
+    user-select: none;
+}
+
+.multiplier-section.disabled::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    cursor: not-allowed;
+    border-radius: 16px;
 }
 
 .multiplier-header {
@@ -32,7 +45,7 @@
 
 .multiplier-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
     align-items: center;
 }
