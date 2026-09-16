@@ -51,7 +51,7 @@
 }
 
 /* ===== Адаптив ===== */
-@media (max-width: 850px) {
+@media (max-width: 800px) {
     .main-layout {
         grid-template-columns: 1fr;
         gap: 16px;
