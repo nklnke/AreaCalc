@@ -1,6 +1,6 @@
 {
   "name": "area-calculator",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Калькулятор площадей",
   "main": "main.js",
   "scripts": {
