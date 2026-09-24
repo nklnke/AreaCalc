@@ -5,11 +5,17 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "help": "node scripts/help.js",
+    "menu": "node scripts/menu.js",
     "build": "electron-builder",
     "build:win": "electron-builder --win nsis --x64",
     "build:win:portable": "electron-builder --win portable --x64",
+    "build:win:dir": "electron-builder --win nsis --x64 --dir --publish never",
     "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux"
+    "build:linux": "electron-builder --linux",
+    "release:win": "electron-builder --win nsis --x64 --publish always",
+    "release:win:draft": "electron-builder --win nsis --x64 --publish onTagOrDraft",
+    "release:tag": "node scripts/release-tag.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9"

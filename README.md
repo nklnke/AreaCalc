@@ -114,6 +114,58 @@ npm run build:linux
 
 ---
 
+### 📜 Команды
+
+```bash
+npm run help   # список всех команд
+npm run menu   # интерактивное меню
+npm start      # запуск приложения
+```
+
+| Команда | Что делает |
+|---------|------------|
+| `help` | Список всех команд |
+| `menu` | Интерактивное меню команд |
+| `start` | Запуск приложения |
+| `build` | Сборка по умолчанию (все цели из конфига) |
+| `build:win` | Установщик Windows NSIS (с автообновлением) |
+| `build:win:portable` | Portable exe (без автообновления) |
+| `build:win:dir` | Быстрая проверка сборки без установщика |
+| `build:mac` | Сборка macOS, только на macOS |
+| `build:linux` | Сборка Linux, из Windows — WSL/Docker |
+| `release:win` | Релиз Windows в GitHub Releases (нужен `GH_TOKEN`) |
+| `release:win:draft` | Тестовый черновик релиза (нужен `GH_TOKEN`) |
+| `release:tag` | CI-релиз: бамп версии, коммит, тег, push (дальше соберет Actions) |
+
+### 🚀 Релиз и автообновление
+
+Вручную:
+
+```bash
+# 1. Бамп version в package.json, коммит
+# 2. Тег и push
+git tag v2.2.0
+git push origin v2.2.0
+# 3. Сборка с публикацией (Windows, нужен GH_TOKEN с правами repo)
+$env:GH_TOKEN = '...'   # PowerShell
+npm run release:win
+# тестовый черновик:
+npm run release:win:draft
+```
+
+Автоматически: workflow `.github/workflows/release.yml` собирает NSIS и публикует в GitHub Releases по push тега `v*`.
+
+Скрипт `release:tag` делает рутину за тебя (проверки → gate-сборка `build:win:dir` → бамп → коммит → тег → push):
+
+```bash
+npm run release:tag -- 2.2.0           # полный прогон
+npm run release:tag -- 2.2.0 --dry-run # только показать план
+```
+
+Проверка: в Release должен быть `latest.yml`; поставить предыдущую версию → дождаться нотификации об обновлении. Portable-версия не обновляется автоматически.
+
+---
+
 ## 📁 Структура проекта
 
 ```
@@ -128,6 +180,13 @@ area-calculator/
 │
 ├── 📁 shared/                    # Общий код main + renderer (UMD)
 │   └── 📄 validate.js            # Канон валидации записей (isValidRecord, normalizeRecord)
+│
+├── 📁 scripts/                   # Dev-инструменты (не входят в сборку)
+│   ├── 📄 commands.js            # Единый реестр команд для help/menu
+│   ├── 📄 help.js                # `npm run help` — список команд
+│   └── 📄 menu.js                # `npm run menu` — интерактивное меню
+│
+├── 📁 .github/workflows/         # CI: релиз Windows NSIS по тегу v* (publish в GitHub Releases)
 │
 ├── 📁 css/                       # Стили (модульные)
 │   ├── 📄 variables.css          # CSS-переменные (светлая/тёмная тема)
