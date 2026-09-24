@@ -4,5 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   loadData: () => ipcRenderer.invoke('load-data'),
   saveData: (data) => ipcRenderer.invoke('save-data', data),
-  clearData: () => ipcRenderer.invoke('clear-data')
+  clearData: () => ipcRenderer.invoke('clear-data'),
+  minimizeWindow: () => ipcRenderer.invoke('window-minimize'),
+  closeWindow: () => ipcRenderer.invoke('window-close')
 });

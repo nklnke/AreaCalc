@@ -190,9 +190,10 @@ area-calculator/
 │
 ├── 📁 css/                       # Стили (модульные)
 │   ├── 📄 variables.css          # CSS-переменные (светлая/тёмная тема)
-│   ├── 📄 base.css               # Базовые стили, .app, body, адаптив
+│   ├── 📄 base.css               # Базовые стили, .app, body, адаптив (+ скругление безрамочного окна)
 │   ├── 📄 layout.css             # Двухколоночная компоновка
 │   ├── 📄 header.css             # Шапка, кнопка смены темы
+│   ├── 📄 titlebar.css           # Своя панель окна (drag-зона, свернуть/развернуть/закрыть)
 │   ├── 📄 input.css              # Поля ввода, кнопка «Добавить»
 │   ├── 📄 multiplier.css         # Блок множителя
 │   ├── 📄 total.css              # Общая площадь, переключатель точности
@@ -268,6 +269,7 @@ area-calculator/
 | `input-filter.js` | Разрешает только цифры и один разделитель (`.` или `,`) |
 | `export.js` | Экспорт в CSV/JSON и импорт из JSON |
 | `calculator.js` | Вычисление выражений, дописывание площади из истории |
+| `window-controls.js` | Своя панель окна: свернуть/развернуть/закрыть через IPC |
 | `main.js` | Точка входа: инициализация модулей и обработчиков событий |
 
 ### 🔗 Порядок загрузки
@@ -275,13 +277,13 @@ area-calculator/
 **CSS** (важен порядок — переменные должны быть первыми):
 
 ```
-variables → base → layout → header → input → multiplier → total → history → modal → skeleton → export → calculator → animations
+variables → base → layout → header → titlebar → input → multiplier → total → history → modal → skeleton → export → calculator → animations
 ```
 
 **JS** (важен порядок — утилиты первыми, точка входа последней):
 
 ```
-utils → shared/validate → theme → precision → data → skeleton → modal → history → edit → input-filter → export → calculator → main
+utils → shared/validate → theme → precision → data → skeleton → modal → history → edit → input-filter → export → calculator → window-controls → main
 ```
 
 ### 🧩 Взаимодействие модулей
@@ -301,6 +303,7 @@ utils → shared/validate → theme → precision → data → skeleton → moda
 | `Edit` | `window.Edit` | `init()`, `open()`, `save()`, `close()` |
 | `InputFilter` | `window.InputFilter` | `setup()`, `setupAll()` |
 | `Export` | `window.Export` | `init()`, `exportCSV()`, `exportJSON()` |
+| `WindowControls` | `window.WindowControls` | `init()` |
 
 ## 🗄️ Хранение данных
 

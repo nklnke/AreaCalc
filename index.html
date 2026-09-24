@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/titlebar.css">
     <link rel="stylesheet" href="css/input.css">
     <link rel="stylesheet" href="css/multiplier.css">
     <link rel="stylesheet" href="css/total.css">
@@ -69,6 +70,17 @@
     </div>
 
     <div class="app">
+        <!-- Своя панель окна: drag-зона + свернуть / закрыть -->
+        <div class="titlebar" id="titlebar">
+            <div class="titlebar-drag">
+                <span class="titlebar-dot" aria-hidden="true"></span>
+                <span class="titlebar-name">AreaCalc</span>
+            </div>
+            <div class="titlebar-controls">
+                <button class="titlebar-btn" id="winMinBtn" title="Свернуть">—</button>
+                <button class="titlebar-btn titlebar-close" id="winCloseBtn" title="Закрыть">✕</button>
+            </div>
+        </div>
         <div class="main-layout">
             <!-- ЛЕВАЯ КОЛОНКА -->
             <div class="left-column">
@@ -260,5 +272,6 @@
     <script src="js/input-filter.js"></script>
     <script src="js/export.js"></script>
     <script src="js/calculator.js"></script>
+    <script src="js/window-controls.js"></script>
     <script src="js/main.js"></script>
 </body>

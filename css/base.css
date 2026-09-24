@@ -52,26 +52,54 @@ html.theme-instant *::after {
 }
 
 body {
-    background: var(--bg-body);
+    background: transparent;
     min-height: 100vh;
     padding: 0;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    /* Текст вне полей ввода не выделяется */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+input,
+textarea {
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 .app {
     max-width: 900px;
     width: 100%;
     background: var(--bg-app);
-    padding: 16px 16px;
+    padding: 0 16px 16px;
     margin: 0;
     height: 100vh;
     max-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    /* Скругление безрамочного окна (main.js: transparent + frame:false).
+       Окно фиксированного размера, разворачивания нет */
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    /* Окно таскается за любое место; кликабельное ниже помечено no-drag */
+    -webkit-app-region: drag;
+}
+
+/* Интерактив внутри drag-зоны: без no-drag клики умирают и таскают окно */
+button,
+input,
+textarea,
+select,
+a,
+.history-list li,
+.modal-overlay,
+.export-menu-content,
+.import-choice-content {
+    -webkit-app-region: no-drag;
 }
 
 /* Убираем глобальную прокрутку */

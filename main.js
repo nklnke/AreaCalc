@@ -13,10 +13,9 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 1000,
-    minWidth: 750,
-    minHeight: 600,
-    resizable: true,
-    maximizable: true,
+    // Фиксированный размер: ресайз и максимизация запрещены, своя панель — только свернуть/закрыть
+    resizable: false,
+    maximizable: false,
     fullscreenable: false,
     icon: path.join(__dirname, 'icon.ico'),
     webPreferences: {
@@ -26,8 +25,9 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     title: 'Area Calculator',
-    backgroundColor: '#f4f6fa',
-    frame: true
+    // Своя панель: безрамочное прозрачное окно, скругление рисует CSS (.app)
+    transparent: true,
+    frame: false
   });
 
   mainWindow.loadFile('index.html');
@@ -156,4 +156,14 @@ ipcMain.handle('clear-data', async (event) => {
     console.error('Error clearing data:', error);
     return false;
   }
+});
+
+// ===== Своя панель окна =====
+
+ipcMain.handle('window-minimize', () => {
+  if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.handle('window-close', () => {
+  if (mainWindow) mainWindow.close();
 });

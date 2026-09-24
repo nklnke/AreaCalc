@@ -5,6 +5,7 @@
     Modal.init();
     Theme.init();
     Precision.init();
+    WindowControls.init();
     History.init();
     Edit.init();
     InputFilter.setupAll();
