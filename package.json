@@ -69,7 +69,8 @@
       {
         "provider": "github",
         "owner": "nklnke",
-        "repo": "AreaCalc"
+        "repo": "AreaCalc",
+        "releaseType": "release"
       }
     ],
     "files": [
