@@ -124,7 +124,7 @@ window.Edit = (function() {
             delete history[index].note;
         }
         
-        history[index].timestamp = Date.now();
+        history[index].updatedAt = Date.now();
         
         await Data.save();
         History.render();

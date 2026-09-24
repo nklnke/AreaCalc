@@ -21,6 +21,7 @@ window.Modal = (function() {
                 modal.style.display = 'none';
                 modalButton.removeEventListener('click', handler);
                 modalButton.removeEventListener('keydown', keyHandler);
+                modal.removeEventListener('click', overlayHandler);
                 resolve();
             };
             
@@ -68,6 +69,7 @@ window.Modal = (function() {
             document.body.appendChild(overlay);
 
             const done = (value) => {
+                document.removeEventListener('keydown', esc);
                 overlay.remove();
                 resolve(value);
             };

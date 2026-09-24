@@ -302,11 +302,13 @@ window.History = (function() {
             id: Utils.generateId(),
             width: original.width,
             height: original.height,
-            multiplier: original.multiplier || 1,
             isMultiplied: original.isMultiplied || false,
             note: original.note || '',
             timestamp: Date.now()
         };
+        if (duplicateItem.isMultiplied && typeof original.multiplier === 'number') {
+            duplicateItem.multiplier = original.multiplier;
+        }
         
         history.splice(index + 1, 0, duplicateItem);
         newItemIds.add(duplicateItem.id);

@@ -16,9 +16,17 @@ window.Data = (function() {
     
     async function save() {
         try {
-            await window.electronAPI.saveData(history);
+            const ok = await window.electronAPI.saveData(history);
+            if (ok === false && window.Modal) {
+                await window.Modal.showError('Не удалось сохранить данные на диск.');
+            }
+            return ok !== false;
         } catch (error) {
             console.error('Error saving data:', error);
+            if (window.Modal) {
+                try { await window.Modal.showError('Не удалось сохранить данные на диск.'); } catch (e) { /* noop */ }
+            }
+            return false;
         }
     }
     

@@ -7,16 +7,18 @@
     "start": "electron .",
     "build": "electron-builder",
     "build:win": "electron-builder --win nsis --x64",
-    "build:win:portable": "electron-builder --win portable --x64"
+    "build:win:portable": "electron-builder --win portable --x64",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
   },
   "dependencies": {
-    "electron-updater": "^6.1.8"
+    "electron-updater": "^6.8.9"
   },
   "author": "Danil Kozlov",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3"
   },
   "build": {
     "appId": "com.areacalculator.app",
@@ -41,13 +43,36 @@
     "portable": {
       "artifactName": "AreaCalculator_portable.exe"
     },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.utilities",
+      "artifactName": "${productName}_${version}_${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility",
+      "artifactName": "${productName}_${version}_${arch}.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "nklnke",
+        "repo": "AreaCalc"
+      }
+    ],
     "files": [
       "main.js",
       "preload.js",
       "index.html",
       "icon.ico",
       "css/**/*",
-      "js/**/*"
+      "js/**/*",
+      "shared/**/*"
     ]
   }
 }

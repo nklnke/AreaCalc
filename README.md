@@ -1,7 +1,7 @@
 # 📐 Калькулятор площадей
 
 ![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
-![Electron](https://img.shields.io/badge/Electron-28.0.0-47848f.svg)
+![Electron](https://img.shields.io/badge/Electron-44-47848f.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
 
@@ -38,7 +38,7 @@
 
 Перед началом убедитесь, что у вас установлены:
 
-- [Node.js](https://nodejs.org/) (версия 16 или выше)
+- [Node.js](https://nodejs.org/) (версия 20 или выше)
 - [npm](https://www.npmjs.com/) (устанавливается вместе с Node.js)
 
 Проверить установку можно командами:
@@ -91,14 +91,26 @@ npm run build:win
 
 Готовый файл: `dist/AreaCalc Setup.exe`
 
-> Автообновление через `electron-updater` работает только для NSIS-сборки и требует
-> настроенного `publish`-провайдера (см. доку `electron-builder` «Auto Update»).
-> Portable-версия не обновляется автоматически.
+> Автообновление через `electron-updater` работает только для NSIS-сборки.
+> В `package.json` настроен `publish`-провайдер GitHub (`nklnke/AreaCalc`):
+> релиз собирается с `GH_TOKEN` в окружении (`electron-builder --win nsis --publish always`),
+> в GitHub Release должен попасть `latest.yml`. Portable-версия не обновляется автоматически.
 
 ---
 
-> 🍏/🐧 Сборок для macOS/Linux в `package.json` сейчас нет
-> (`build:mac` / `build:linux` отсутствуют) — только Windows.
+### 🏗️ Сборка для macOS / Linux
+
+```bash
+npm run build:mac
+npm run build:linux
+```
+
+Готовые файлы: `dist/` (`dmg`/`zip` для macOS, `AppImage` для Linux).
+
+> ⚠️ Ограничения: `mac`-сборка выполняется только на macOS (нужны `dmg`/`zip` и подпись/notarization для распространения),
+> `linux`-сборка из Windows — через WSL/Docker. Иконка `icon.ico` — только для Windows;
+> для macOS/Linux без `icon.icns` / `icon.png` builder использует иконку по умолчанию (warning, не ошибка).
+> Автообновление для mac/Linux в этом проекте не настраивалось — только Windows NSIS.
 
 ---
 
@@ -111,8 +123,11 @@ area-calculator/
 ├── 📄 preload.js                 # Мост IPC между процессами
 ├── 📄 index.html                 # HTML-разметка интерфейса
 ├── 📄 package.json               # Конфигурация и зависимости
-├── 🖼️ icon.ico                   # Иконка приложения
+├── 🖼️ icon.ico                   # Иконка приложения (Windows)
 ├── 📄 README.md                  # Документация
+│
+├── 📁 shared/                    # Общий код main + renderer (UMD)
+│   └── 📄 validate.js            # Канон валидации записей (isValidRecord, normalizeRecord)
 │
 ├── 📁 css/                       # Стили (модульные)
 │   ├── 📄 variables.css          # CSS-переменные (светлая/тёмная тема)
@@ -183,6 +198,7 @@ area-calculator/
 | Модуль | Назначение |
 |--------|------------|
 | `utils.js` | Утилиты: `escapeHtml`, `parseNumber`, `formatTime`, `generateId` |
+| `shared/validate.js` | Канон валидации: `isValidRecord`, `normalizeRecord`, `sanitizeHistory` (main + renderer) |
 | `theme.js` | Переключение и сохранение темы, автоопределение системной |
 | `precision.js` | Переключатель точности округления (2, 3 или 4 знака) |
 | `data.js` | Обёртка над IPC: загрузка, сохранение, добавление, удаление |
@@ -206,7 +222,7 @@ variables → base → layout → header → input → multiplier → total → 
 **JS** (важен порядок — утилиты первыми, точка входа последней):
 
 ```
-utils → theme → precision → data → skeleton → modal → history → edit → input-filter → export → calculator → main
+utils → shared/validate → theme → precision → data → skeleton → modal → history → edit → input-filter → export → calculator → main
 ```
 
 ### 🧩 Взаимодействие модулей
@@ -216,6 +232,7 @@ utils → theme → precision → data → skeleton → modal → history → ed
 | Модуль | Доступ | Что даёт |
 |--------|--------|----------|
 | `Utils` | `window.Utils` | `parseNumber()`, `escapeHtml()`, `formatTime()` |
+| `Validate` | `window.Validate` | `isValidRecord()`, `normalizeRecord()`, `sanitizeHistory()` |
 | `Theme` | `window.Theme` | `init()`, `load()`, `toggle()` |
 | `Precision` | `window.Precision` | `init()`, `load()`, `get()`, `set()` |
 | `Data` | `window.Data` | `load()`, `save()`, `get()`, `set()`, `add()`, `removeById()`, `clear()` |

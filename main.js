@@ -53,12 +53,16 @@ app.on('second-instance', () => {
 app.whenReady().then(() => {
   createWindow();
 
-  // Автообновление (только NSIS-сборка; без publish-конфига молча пропускаем)
+  // Автообновление (только NSIS-сборка; publish-конфиг — GitHub Releases nklnke/AreaCalc)
   try {
     const { autoUpdater } = require('electron-updater');
-    autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+    autoUpdater.logger = console;
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      console.error('Auto update check failed:', err && err.message ? err.message : err);
+    });
   } catch (e) {
     // electron-updater не установлен или нет конфига публикации
+    console.error('Auto updater init failed:', e && e.message ? e.message : e);
   }
 
   app.on('activate', () => {
@@ -80,8 +84,17 @@ function getDataPath() {
   return path.join(app.getPath('userData'), 'areas_history.json');
 }
 
-// Минимальная валидация одной записи: отбрасываем битую, остальное сохраняем
+// Минимальная валидация одной записи: отбрасываем битую, остальное сохраняем.
+// Канон — shared/validate.js (тот же модуль в renderer как window.Validate).
+let Validate;
+try {
+  Validate = require('./shared/validate');
+} catch (e) {
+  Validate = null;
+}
+
 function isValidRecord(item) {
+  if (Validate) return Validate.isValidRecord(item);
   return (
     item &&
     typeof item === 'object' &&
@@ -98,6 +111,7 @@ function isValidRecord(item) {
 }
 
 function sanitizeHistory(data) {
+  if (Validate) return Validate.sanitizeHistory(data);
   if (!Array.isArray(data)) return [];
   return data.filter(isValidRecord);
 }

@@ -164,26 +164,33 @@ window.Export = (function() {
                     throw new Error('Неверный формат файла');
                 }
                 
-                // Валидация + нормализация записей:
-                // старые бэкапы могут иметь числовой id — приводим к строке,
-                // чтобы пройти валидацию хранилища
-                importedHistory = importedHistory
-                    .filter(item => {
-                        return item &&
-                               typeof item.width === 'number' &&
-                               typeof item.height === 'number' &&
-                               item.width > 0 &&
-                               item.height > 0;
-                    })
-                    .map(item => ({
-                        id: (item.id !== undefined && item.id !== null) ? String(item.id) : Utils.generateId(),
-                        width: item.width,
-                        height: item.height,
-                        multiplier: item.multiplier,
-                        isMultiplied: !!item.isMultiplied,
-                        note: typeof item.note === 'string' ? item.note : '',
-                        timestamp: typeof item.timestamp === 'number' ? item.timestamp : Date.now()
-                    }));
+                // Валидация + нормализация записей через общий модуль:
+                // shared/validate.js (window.Validate) — тот же канон, что в main.js.
+                // Старые бэкапы могут иметь числовой id — приводим к строке.
+                const now = Date.now();
+                if (window.Validate) {
+                    importedHistory = importedHistory
+                        .map(item => window.Validate.normalizeRecord(item, now))
+                        .filter(item => item !== null);
+                } else {
+                    importedHistory = importedHistory
+                        .filter(item => {
+                            return item &&
+                                   typeof item.width === 'number' &&
+                                   typeof item.height === 'number' &&
+                                   item.width > 0 &&
+                                   item.height > 0;
+                        })
+                        .map(item => ({
+                            id: (item.id !== undefined && item.id !== null) ? String(item.id) : Utils.generateId(),
+                            width: item.width,
+                            height: item.height,
+                            multiplier: item.multiplier,
+                            isMultiplied: !!item.isMultiplied,
+                            note: typeof item.note === 'string' ? item.note : '',
+                            timestamp: typeof item.timestamp === 'number' ? item.timestamp : Date.now()
+                        }));
+                }
                 
                 if (importedHistory.length === 0) {
                     Modal.showError('В файле нет корректных записей.');
