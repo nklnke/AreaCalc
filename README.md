@@ -155,6 +155,7 @@ npm run release:win:draft
 ```
 
 Автоматически: workflow `.github/workflows/release.yml` собирает NSIS и публикует в GitHub Releases по push тега `v*`.
+В publish-конфиге стоит `"releaseType": "release"`, поэтому релиз публикуется сразу, а не в черновики.
 
 Скрипт `release:tag` делает рутину за тебя (проверки → gate-сборка `build:win:dir` → бамп → коммит → тег → push):
 
