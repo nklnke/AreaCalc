@@ -1,13 +1,16 @@
 {
   "name": "area-calculator",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Калькулятор площадей",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "build:win": "electron-builder --win --x64",
-    "build:win:portable": "electron-builder --win --x64 -- portable"
+    "build:win": "electron-builder --win nsis --x64",
+    "build:win:portable": "electron-builder --win portable --x64"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.8"
   },
   "author": "Danil Kozlov",
   "license": "MIT",
@@ -32,7 +35,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "differentialPackage": true
     },
     "portable": {
       "artifactName": "AreaCalculator_portable.exe"

@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Area Calculator</title>
     <link rel="stylesheet" href="css/variables.css">
@@ -15,6 +16,7 @@
     <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/export.css">
+    <link rel="stylesheet" href="css/calculator.css">
     <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
@@ -126,6 +128,19 @@
                     <span class="value" id="totalDisplay">0 <small>м²</small></span>
                 </div>
 
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <span>🧮 Калькулятор</span>
+                        <span class="calculator-result" id="calcResult">—</span>
+                    </div>
+                    <div class="calculator-row">
+                        <input type="text" id="calcInput" inputmode="decimal" placeholder="2.5*3+10" autocomplete="off" spellcheck="false">
+                        <button id="calcEquals" title="Посчитать">=</button>
+                        <button id="calcClear" title="Очистить">C</button>
+                    </div>
+                    <div class="calculator-hint">Кнопка 🧮 в истории дописывает площадь сюда</div>
+                </div>
+
                 <div class="footer-hint">💡 1 м² = 1 000 000 мм²</div>
             </div>
 
@@ -222,5 +237,6 @@
     <script src="js/edit.js"></script>
     <script src="js/input-filter.js"></script>
     <script src="js/export.js"></script>
+    <script src="js/calculator.js"></script>
     <script src="js/main.js"></script>
 </body>

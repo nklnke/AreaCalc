@@ -112,7 +112,7 @@ window.Export = (function() {
         // BOM для правильного отображения кириллицы в Excel
         const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
         
-        downloadFile(blob, `инвентаризация_${getDateStr()}.csv`);
+        downloadFile(blob, `areacalc_${getDateStr()}.csv`);
     }
     
     // ===== ЭКСПОРТ JSON =====
@@ -126,7 +126,7 @@ window.Export = (function() {
         }
         
         const data = {
-            version: '2.0.0',
+            version: '2.1.0',
             exportDate: new Date().toISOString(),
             count: history.length,
             history: history
@@ -135,7 +135,7 @@ window.Export = (function() {
         const json = JSON.stringify(data, null, 2);
         const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
         
-        downloadFile(blob, `инвентаризация_backup_${getDateStr()}.json`);
+        downloadFile(blob, `areacalc_backup_${getDateStr()}.json`);
     }
     
     // ===== ИМПОРТ JSON =====
@@ -164,14 +164,26 @@ window.Export = (function() {
                     throw new Error('Неверный формат файла');
                 }
                 
-                // Валидация записей
-                importedHistory = importedHistory.filter(item => {
-                    return item && 
-                           typeof item.width === 'number' && 
-                           typeof item.height === 'number' &&
-                           item.width > 0 && 
-                           item.height > 0;
-                });
+                // Валидация + нормализация записей:
+                // старые бэкапы могут иметь числовой id — приводим к строке,
+                // чтобы пройти валидацию хранилища
+                importedHistory = importedHistory
+                    .filter(item => {
+                        return item &&
+                               typeof item.width === 'number' &&
+                               typeof item.height === 'number' &&
+                               item.width > 0 &&
+                               item.height > 0;
+                    })
+                    .map(item => ({
+                        id: (item.id !== undefined && item.id !== null) ? String(item.id) : Utils.generateId(),
+                        width: item.width,
+                        height: item.height,
+                        multiplier: item.multiplier,
+                        isMultiplied: !!item.isMultiplied,
+                        note: typeof item.note === 'string' ? item.note : '',
+                        timestamp: typeof item.timestamp === 'number' ? item.timestamp : Date.now()
+                    }));
                 
                 if (importedHistory.length === 0) {
                     Modal.showError('В файле нет корректных записей.');
@@ -197,11 +209,13 @@ window.Export = (function() {
                         await Modal.show(`✅ Заменено. Импортировано записей: ${importedHistory.length}`);
                     } else if (choice === 'append') {
                         // Добавляем с новыми ID, чтобы не было конфликтов
-                        importedHistory.forEach(item => {
-                            item.id = Date.now() + Math.random().toString(36).substr(2, 4);
-                        });
-                        
-                        const newHistory = [...currentHistory, ...importedHistory];
+                        // (копируем, чтобы не мутировать распарсенный массив)
+                        const toAppend = importedHistory.map(item => ({
+                            ...item,
+                            id: Utils.generateId()
+                        }));
+
+                        const newHistory = [...currentHistory, ...toAppend];
                         Data.set(newHistory);
                         await Data.save();
                         History.render();

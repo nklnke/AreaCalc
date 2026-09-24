@@ -25,7 +25,7 @@
 - 🦾 **Возможность редактирования записей** - редактирование всех полей в модальном окне
 - 📊 **Общая сумма** — автоматическое суммирование всех площадей
 - 🎛 **Переключатель точности округления** - от сотых до десятитысячных
-- 💾 **Сохранение данных** — история сохраняется в локальном хранилище
+- 💾 **Сохранение данных** — история сохраняется в файл `areas_history.json` в папке данных приложения
 - 📤 **Экспорт/импорт данных** — CSV для Excel, JSON для бэкапа
 - 🚀 **Кроссплатформенность** — работает на Windows, macOS и Linux
 - 🌓 **Светлая/тёмная тема** — переключайте тему одним кликом
@@ -81,9 +81,9 @@ npm start
 npm run build:win:portable
 ```
 
-Готовый файл: `dist/AreaCalc.exe`
+Готовый файл: `dist/AreaCalculator_portable.exe`
 
-#### Установщик (с инсталляцией)
+#### Установщик (с инсталляцией, поддерживает автообновление)
 
 ```bash
 npm run build:win
@@ -91,19 +91,14 @@ npm run build:win
 
 Готовый файл: `dist/AreaCalc Setup.exe`
 
+> Автообновление через `electron-updater` работает только для NSIS-сборки и требует
+> настроенного `publish`-провайдера (см. доку `electron-builder` «Auto Update»).
+> Portable-версия не обновляется автоматически.
+
 ---
 
-### 🍏 Сборка для macOS
-
-```bash
-npm run build:mac
-```
-
-### 🐧 Сборка для Linux
-
-```bash
-npm run build:linux
-```
+> 🍏/🐧 Сборок для macOS/Linux в `package.json` сейчас нет
+> (`build:mac` / `build:linux` отсутствуют) — только Windows.
 
 ---
 
@@ -131,6 +126,7 @@ area-calculator/
 │   ├── 📄 modal.css              # Модальные окна (ошибка, редактирование)
 │   ├── 📄 skeleton.css           # Скелетон загрузки
 │   ├── 📄 export.css             # Стили экспорта/импорта
+│   ├── 📄 calculator.css         # Стили калькулятора выражений
 │   └── 📄 animations.css         # Все анимации
 │
 ├── 📁 js/                        # Логика (модульная)
@@ -144,10 +140,11 @@ area-calculator/
 │   ├── 📄 edit.js                # Редактирование записей
 │   ├── 📄 input-filter.js        # Фильтр ввода (только цифры)
 │   ├── 📄 export.js              # Экспорт/импорт данных (CSV, JSON)
+│   ├── 📄 calculator.js          # Калькулятор выражений, перенос площади из истории
 │   └── 📄 main.js                # Точка входа, обработчики событий
 │
 └── 📁 dist/                      # Папка со сборками (создаётся автоматически)
-    ├── AreaCalc.exe              # Портативная версия
+    ├── AreaCalculator_portable.exe # Портативная версия
     └── AreaCalc Setup.exe        # Установщик
 ```
 
@@ -178,13 +175,14 @@ area-calculator/
 | `modal.css` | Модальные окна: ошибка и редактирование |
 | `skeleton.css` | Анимация загрузки (мерцающие заглушки) |
 | `export.css` | Стили кнопок экспорта/импорта, меню и диалога выбора |
+| `calculator.css` | Стили блока калькулятора выражений и кнопки 🧮 |
 | `animations.css` | Все `@keyframes` и анимации нажатия |
 
 #### ⚙️ JavaScript (папка `js/`)
 
 | Модуль | Назначение |
 |--------|------------|
-| `utils.js` | Утилиты: `escapeHtml`, `parseNumber`, `formatTime` |
+| `utils.js` | Утилиты: `escapeHtml`, `parseNumber`, `formatTime`, `generateId` |
 | `theme.js` | Переключение и сохранение темы, автоопределение системной |
 | `precision.js` | Переключатель точности округления (2, 3 или 4 знака) |
 | `data.js` | Обёртка над IPC: загрузка, сохранение, добавление, удаление |
@@ -194,6 +192,7 @@ area-calculator/
 | `edit.js` | Редактирование записей: ширина, высота, множитель, заметка |
 | `input-filter.js` | Разрешает только цифры и один разделитель (`.` или `,`) |
 | `export.js` | Экспорт в CSV/JSON и импорт из JSON |
+| `calculator.js` | Вычисление выражений, дописывание площади из истории |
 | `main.js` | Точка входа: инициализация модулей и обработчиков событий |
 
 ### 🔗 Порядок загрузки
@@ -201,13 +200,13 @@ area-calculator/
 **CSS** (важен порядок — переменные должны быть первыми):
 
 ```
-variables → base → layout → header → input → multiplier → total → history → modal → skeleton → export → animations
+variables → base → layout → header → input → multiplier → total → history → modal → skeleton → export → calculator → animations
 ```
 
 **JS** (важен порядок — утилиты первыми, точка входа последней):
 
 ```
-utils → theme → precision → data → skeleton → modal → history → edit → input-filter → export → main
+utils → theme → precision → data → skeleton → modal → history → edit → input-filter → export → calculator → main
 ```
 
 ### 🧩 Взаимодействие модулей
@@ -221,7 +220,7 @@ utils → theme → precision → data → skeleton → modal → history → ed
 | `Precision` | `window.Precision` | `init()`, `load()`, `get()`, `set()` |
 | `Data` | `window.Data` | `load()`, `save()`, `get()`, `set()`, `add()`, `removeById()`, `clear()` |
 | `Skeleton` | `window.Skeleton` | `init()`, `show()`, `hide()` |
-| `Modal` | `window.Modal` | `init()`, `show()`, `showError()` |
+| `Modal` | `window.Modal` | `init()`, `show()`, `showError()`, `confirm()` |
 | `History` | `window.History` | `init()`, `render()`, `add()`, `multiplyLast()`, `deleteById()`, `duplicate()`, `clearAll()` |
 | `Edit` | `window.Edit` | `init()`, `open()`, `save()`, `close()` |
 | `InputFilter` | `window.InputFilter` | `setup()`, `setupAll()` |
@@ -244,7 +243,7 @@ utils → theme → precision → data → skeleton → modal → history → ed
 ```json
 [
   {
-    "id": 1698765432100,
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "width": 2000,
     "height": 1500,
     "multiplier": 3,
@@ -253,7 +252,7 @@ utils → theme → precision → data → skeleton → modal → history → ed
     "timestamp": 1698765432100
   },
   {
-    "id": 1698765432101,
+    "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
     "width": 1000,
     "height": 1000,
     "timestamp": 1698765432101,
@@ -266,10 +265,11 @@ utils → theme → precision → data → skeleton → modal → history → ed
 
 | Поле | Тип | Обязательное | Описание |
 |------|-----|:---:|----------|
-| `id` | `number` | ✅ | Уникальный идентификатор записи (генерируется автоматически) |
+| `id` | `string` | ✅ | Уникальный идентификатор записи (UUID, генерируется автоматически) |
 | `width` | `number` | ✅ | Ширина в миллиметрах |
 | `height` | `number` | ✅ | Высота в миллиметрах |
-| `timestamp` | `number` | ✅ | Время создания записи (Unix timestamp, миллисекунды) |
+| `timestamp` | `number` | ✅ | Время создания записи (Unix timestamp, миллисекунды; множитель его не меняет) |
+| `updatedAt` | `number` | ❌ | Время последнего изменения (множитель, редактирование) |
 | `multiplier` | `number` | ❌ | Значение множителя (если применялся) |
 | `isMultiplied` | `boolean` | ❌ | `true`, если запись создана через множитель |
 | `note` | `string` | ❌ | Текстовая заметка к записи |

@@ -123,6 +123,7 @@ window.History = (function() {
                         </div>
                         <div class="item-actions">
                             <span class="area-badge">${displayArea} м²</span>
+                            <button class="calc-btn" data-id="${item.id}" title="В калькулятор">🧮</button>
                             <button class="dup-btn" data-id="${item.id}" title="Дублировать">📋</button>
                             <button class="del-btn" data-id="${item.id}" title="Удалить">✕</button>
                         </div>
@@ -146,6 +147,7 @@ window.History = (function() {
     function attachHandlers(li) {
         const delBtn = li.querySelector('.del-btn');
         const dupBtn = li.querySelector('.dup-btn');
+        const calcBtn = li.querySelector('.calc-btn');
         const id = li.getAttribute('data-id');
         
         if (delBtn) {
@@ -165,6 +167,16 @@ window.History = (function() {
             });
         }
         
+        if (calcBtn) {
+            calcBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const found = Data.get().find(item => item.id === id);
+                if (found && window.Calculator) {
+                    Calculator.appendValue(getDisplayArea(found));
+                }
+            });
+        }
+        
         li.addEventListener('click', function(e) {
             if (e.target.closest('button')) return;
             if (window.Edit) Edit.open(id);
@@ -174,7 +186,7 @@ window.History = (function() {
     // Добавление записи
     async function add(width, height) {
         const newItem = {
-            id: Date.now() + Math.random().toString(36).substr(2, 4),
+            id: Utils.generateId(),
             width: width,
             height: height,
             timestamp: Date.now(),
@@ -205,12 +217,14 @@ window.History = (function() {
         const lastIndex = history.length - 1;
         const last = history[lastIndex];
         
+        // Сохраняем id и исходный timestamp, время изменения пишем в updatedAt
         history[lastIndex] = {
             id: last.id,
             width: last.width,
             height: last.height,
             multiplier: multiplier,
-            timestamp: Date.now(),
+            timestamp: last.timestamp,
+            updatedAt: Date.now(),
             isMultiplied: true,
             note: last.note || ''
         };
@@ -285,7 +299,7 @@ window.History = (function() {
         const original = history[index];
         
         const duplicateItem = {
-            id: Date.now() + Math.random().toString(36).substr(2, 4),
+            id: Utils.generateId(),
             width: original.width,
             height: original.height,
             multiplier: original.multiplier || 1,
@@ -345,6 +359,7 @@ window.History = (function() {
             </div>
             <div class="item-actions">
                 <span class="area-badge">${displayArea} м²</span>
+                <button class="calc-btn" data-id="${item.id}" title="В калькулятор">🧮</button>
                 <button class="dup-btn" data-id="${item.id}" title="Дублировать">📋</button>
                 <button class="del-btn" data-id="${item.id}" title="Удалить">✕</button>
             </div>
@@ -371,6 +386,9 @@ window.History = (function() {
     // Очистка всей истории
     async function clearAll() {
         if (Data.get().length === 0) return;
+
+        const ok = await Modal.confirm(`Удалить все записи (${Data.get().length} шт.)? Действие нельзя отменить.`);
+        if (!ok) return;
         
         const items = historyList.querySelectorAll('li');
         

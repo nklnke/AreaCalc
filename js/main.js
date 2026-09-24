@@ -9,6 +9,7 @@
     Edit.init();
     InputFilter.setupAll();
     Export.init();
+    Calculator.init();
     
     // Показываем скелетон
     Skeleton.show();
@@ -123,15 +124,8 @@
         }
     });
     
-    // Кнопка очистки истории
+    // Кнопка очистки истории (с подтверждением внутри History.clearAll)
     clearAllBtn.addEventListener('click', History.clearAll);
-    
-    // Подписка на очистку из меню
-    if (window.electronAPI && typeof window.electronAPI.onClearHistory === 'function') {
-        window.electronAPI.onClearHistory(() => {
-            History.clearAll();
-        });
-    }
     
     // Финальная активация и фокус
     forceActivateInputs();

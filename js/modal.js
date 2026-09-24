@@ -46,10 +46,50 @@ window.Modal = (function() {
     async function showError(message) {
         await show('❌ ' + message);
     }
+
+    // Диалог подтверждения: resolve(true) — Ok, resolve(false) — отмена
+    function confirm(message) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.style.display = 'flex';
+
+            overlay.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-icon">⚠️</div>
+                    <div class="modal-message"></div>
+                    <div class="edit-modal-actions">
+                        <button class="edit-btn-cancel" data-choice="cancel">Отмена</button>
+                        <button class="edit-btn-save" data-choice="ok">Удалить</button>
+                    </div>
+                </div>
+            `;
+            overlay.querySelector('.modal-message').textContent = message;
+            document.body.appendChild(overlay);
+
+            const done = (value) => {
+                overlay.remove();
+                resolve(value);
+            };
+
+            overlay.querySelector('[data-choice="ok"]').addEventListener('click', () => done(true));
+            overlay.querySelector('[data-choice="cancel"]').addEventListener('click', () => done(false));
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) done(false);
+            });
+            document.addEventListener('keydown', function esc(e) {
+                if (e.key === 'Escape') {
+                    document.removeEventListener('keydown', esc);
+                    done(false);
+                }
+            });
+        });
+    }
     
     return {
         init,
         show,
-        showError
+        showError,
+        confirm
     };
 })();

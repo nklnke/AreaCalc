@@ -20,9 +20,18 @@ function formatTime(timestamp) {
     return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Генерация уникального id записи
+function generateId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+    }
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+
 // Экспорт в глобальный объект
 window.Utils = {
     escapeHtml,
     parseNumber,
-    formatTime
+    formatTime,
+    generateId
 };
