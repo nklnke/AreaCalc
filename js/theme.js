@@ -13,12 +13,25 @@ window.Theme = (function() {
             const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
             darkModeMedia.addEventListener('change', (e) => {
                 if (!localStorage.getItem('theme')) {
-                    const theme = e.matches ? 'dark' : 'light';
-                    document.documentElement.setAttribute('data-theme', theme);
-                    updateIcon(theme);
+                    applyTheme(e.matches ? 'dark' : 'light');
                 }
             });
         }
+    }
+    
+    // Применяет тему за 1 кадр: давит транзишены классом theme-instant
+    // (см. base.css), чтобы блоки не перекрашивались вразнобой 0.2-0.3с.
+    function applyTheme(theme) {
+        const html = document.documentElement;
+        html.classList.add('theme-instant');
+        void html.offsetWidth;
+        html.setAttribute('data-theme', theme);
+        try { html.style.colorScheme = theme; } catch (e) { /* noop */ }
+        updateIcon(theme);
+        void html.offsetWidth;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => html.classList.remove('theme-instant'));
+        });
     }
     
     function updateIcon(theme) {
@@ -36,11 +49,11 @@ window.Theme = (function() {
         try {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                updateIcon(savedTheme);
+                applyTheme(savedTheme);
             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                updateIcon('dark');
+                applyTheme('dark');
+            } else {
+                try { document.documentElement.style.colorScheme = 'light'; } catch (e) { /* noop */ }
             }
         } catch (e) {
             console.log('Theme loading error:', e);
@@ -51,9 +64,8 @@ window.Theme = (function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
-        document.documentElement.setAttribute('data-theme', newTheme);
+        applyTheme(newTheme);
         localStorage.setItem('theme', newTheme);
-        updateIcon(newTheme);
         
         if (themeToggle) {
             themeToggle.classList.add('changing');

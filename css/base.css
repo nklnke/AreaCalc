@@ -41,6 +41,16 @@ input,
         opacity 0.2s ease;
 }
 
+/* Мгновенная смена темы: на время переключения data-theme давим все
+   транзишены/анимации, иначе блоки перекрашиваются 0.2-0.3с вразнобой
+   и получается "хаос" из светлых/тёмных блоков. Класс ставит/снимает Theme. */
+html.theme-instant *,
+html.theme-instant *::before,
+html.theme-instant *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
 body {
     background: var(--bg-body);
     min-height: 100vh;
