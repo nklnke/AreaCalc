@@ -6,6 +6,11 @@
     border-radius: 16px;
     border: 1px solid var(--border-light);
     flex-shrink: 0;
+    /* Дотягиваем низ секции до низа левой колонки (= низ истории справа):
+       свободное место забирает пад, кнопки чуть вытягиваются */
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .calculator-header {
@@ -94,6 +99,54 @@
     margin-top: 8px;
     font-size: 12px;
     color: var(--text-light);
+}
+
+/* Кнопочный калькулятор под строкой ввода: только дописывает символы
+   в #calcInput, сам счёт остаётся в Calculator (без eval, см. js/calculator.js) */
+.calc-pad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 8px;
+    margin-top: 10px;
+    flex: 1;
+}
+
+.calc-pad button {
+    border-radius: 14px;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-app);
+    color: var(--text-secondary);
+    min-width: 0;
+}
+
+.calc-pad button:hover {
+    transform: translateY(-1px);
+    border-color: var(--btn-primary);
+}
+
+.calc-pad button:active {
+    transform: scale(0.92);
+}
+
+.calc-pad .pad-func {
+    background: var(--bg-count);
+    color: var(--text-muted);
+}
+
+.calc-pad .pad-equals {
+    grid-column: span 4;
+    background: var(--btn-primary);
+    border-color: var(--btn-primary);
+    color: var(--text-white);
+}
+
+.calc-pad .pad-equals:hover {
+    background: var(--btn-primary-hover);
 }
 
 /* Кнопка переноса площади записи в калькулятор (в списке истории) */

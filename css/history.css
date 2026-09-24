@@ -223,12 +223,3 @@
     font-size: 15px;
     animation: emptyPulse 2s ease-in-out infinite;
 }
-
-.footer-hint {
-    font-size: 13px;
-    color: var(--text-light);
-    text-align: center;
-    flex-shrink: 0;
-    margin-top: auto;
-    padding: 8px 0 0;
-}
