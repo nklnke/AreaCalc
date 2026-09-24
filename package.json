@@ -7,7 +7,7 @@
     "start": "electron .",
     "help": "node scripts/help.js",
     "menu": "node scripts/menu.js",
-    "test": "node --test test/*.test.js",
+    "test": "node --test test/validate.test.js test/calculator.test.js test/commands.test.js test/export.test.js test/history.test.js",
     "build": "electron-builder",
     "build:win": "electron-builder --win nsis --x64",
     "build:win:portable": "electron-builder --win portable --x64",

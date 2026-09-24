@@ -2,7 +2,7 @@
 // чтобы справка и интерактив не разъезжались.
 const COMMANDS = [
   { name: 'start', cmd: 'electron .', desc: 'Запуск приложения' },
-  { name: 'test', cmd: 'node --test test/*.test.js', desc: 'Тесты (node:test, без зависимостей)' },
+  { name: 'test', cmd: 'node --test test/validate.test.js test/calculator.test.js test/commands.test.js test/export.test.js test/history.test.js', desc: 'Тесты (node:test, без зависимостей)' },
   { name: 'help', cmd: 'node scripts/help.js', desc: 'Список всех команд' },
   { name: 'menu', cmd: 'node scripts/menu.js', desc: 'Интерактивное меню команд' },
   { name: 'build', cmd: 'electron-builder', desc: 'Сборка по умолчанию (все цели из конфига)' },
