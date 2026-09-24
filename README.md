@@ -95,6 +95,8 @@ npm run build:win
 > В `package.json` настроен `publish`-провайдер GitHub (`nklnke/AreaCalc`):
 > релиз собирается с `GH_TOKEN` в окружении (`electron-builder --win nsis --publish always`),
 > в GitHub Release должен попасть `latest.yml`. Portable-версия не обновляется автоматически.
+> О готовности обновления сообщает **диалог внутри приложения** («Перезапустить» ставит обновление сразу),
+> а не системное уведомление — оно может быть подавлено Windows.
 
 ---
 

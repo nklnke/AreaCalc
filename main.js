@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs/promises');
 
@@ -53,11 +53,32 @@ app.on('second-instance', () => {
 app.whenReady().then(() => {
   createWindow();
 
-  // Автообновление (только NSIS-сборка; publish-конфиг — GitHub Releases nklnke/AreaCalc)
+  // Автообновление (только NSIS-сборка; publish-конфиг — GitHub Releases nklnke/AreaCalc).
+  // Диалог показываем сами через dialog.showMessageBox: системные тосты Windows
+  // могут быть подавлены (центр уведомлений, отсутствие ярлыка в Пуске),
+  // а окно приложения видно всегда. Поэтому checkForUpdates() + свой диалог,
+  // а не checkForUpdatesAndNotify().
   try {
     const { autoUpdater } = require('electron-updater');
     autoUpdater.logger = console;
-    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    autoUpdater.on('update-downloaded', async (info) => {
+      try {
+        if (!mainWindow || mainWindow.isDestroyed()) return;
+        const version = (info && info.version) ? info.version : '';
+        const { response } = await dialog.showMessageBox(mainWindow, {
+          type: 'info',
+          title: 'Доступно обновление',
+          message: `Загружена версия ${version}. Перезапустить приложение для установки?`,
+          buttons: ['Перезапустить', 'Позже'],
+          defaultId: 0,
+          cancelId: 1
+        });
+        if (response === 0) autoUpdater.quitAndInstall(false, true);
+      } catch (err) {
+        console.error('Update dialog failed:', err && err.message ? err.message : err);
+      }
+    });
+    autoUpdater.checkForUpdates().catch((err) => {
       console.error('Auto update check failed:', err && err.message ? err.message : err);
     });
   } catch (e) {
