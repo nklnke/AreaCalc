@@ -37,7 +37,7 @@
 .export-menu-content {
     background: var(--bg-modal);
     border-radius: 24px;
-    padding: 28px 24px 20px;
+    padding: 24px;
     max-width: 380px;
     width: 90%;
     box-shadow: 0 20px 60px var(--shadow-modal);
@@ -122,7 +122,7 @@
     margin-top: 16px;
     background: none;
     border: none;
-    border-radius: 40px;
+    border-radius: var(--radius-pill);
     font-size: 15px;
     font-weight: 600;
     color: var(--text-muted);
@@ -144,7 +144,7 @@
 .import-choice-content {
     background: var(--bg-modal);
     border-radius: 24px;
-    padding: 28px 24px 20px;
+    padding: 24px;
     max-width: 420px;
     width: 90%;
     box-shadow: 0 20px 60px var(--shadow-modal);

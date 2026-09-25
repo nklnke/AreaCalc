@@ -2,6 +2,9 @@
 .input-section {
     margin-bottom: 0;
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
 }
 
 .input-row {
@@ -32,7 +35,7 @@
     width: 100%;
     padding: 12px 14px;
     border: 1.5px solid var(--border-color);
-    border-radius: 14px;
+    border-radius: var(--radius-control);
     font-size: 16px;
     background: var(--bg-input);
     outline: none;
@@ -60,20 +63,20 @@
     border: none;
     color: var(--text-white);
     padding: 12px 20px;
-    border-radius: 40px;
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 18px;
+    margin-top: 0;
     width: 100%;
-    box-shadow: 0 4px 12px rgba(45, 122, 255, 0.25);
+    box-shadow: 0 4px 10px rgba(45, 122, 255, 0.25);
     position: relative;
     overflow: hidden;
 }
 
 .btn-add:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(45, 122, 255, 0.35);
+    box-shadow: 0 6px 12px rgba(45, 122, 255, 0.35);
 }
 
 .btn-add:active {

@@ -1,9 +1,9 @@
 /* ===== Калькулятор выражений (левая колонка, внизу) ===== */
 .calculator-section {
-    margin-top: 4px;
-    padding: 16px;
+    margin-top: 0;
+    padding: var(--space-lg);
     background: var(--bg-multiplier);
-    border-radius: 16px;
+    border-radius: var(--radius-card);
     border: 1px solid var(--border-light);
     flex-shrink: 0;
     /* Дотягиваем низ секции до низа левой колонки (= низ истории справа):
@@ -30,7 +30,7 @@
     color: var(--text-muted);
     background: var(--bg-count);
     padding: 2px 12px;
-    border-radius: 30px;
+    border-radius: var(--radius-pill);
     max-width: 60%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -46,10 +46,10 @@
 .calculator-row input {
     flex: 1;
     min-width: 0;
-    padding: 10px 12px;
+    padding: 12px 14px;
     border: 1.5px solid var(--border-color);
-    border-radius: 14px;
-    font-size: 15px;
+    border-radius: var(--radius-control);
+    font-size: 16px;
     outline: none;
     background: var(--bg-input);
     color: var(--text-primary);
@@ -66,7 +66,7 @@
 }
 
 .calculator-row button {
-    border-radius: 30px;
+    border-radius: var(--radius-pill);
     padding: 10px 14px;
     font-size: 15px;
     font-weight: 600;
@@ -113,7 +113,7 @@
 }
 
 .calc-pad button {
-    border-radius: 14px;
+    border-radius: var(--radius-control);
     padding: 10px 0;
     font-size: 16px;
     font-weight: 600;
@@ -156,7 +156,12 @@
     color: var(--text-lighter);
     font-size: 15px;
     cursor: pointer;
-    padding: 0 4px;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
     opacity: 0.7;
 }

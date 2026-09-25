@@ -18,7 +18,7 @@ window.Skeleton = (function() {
     
     function hide() {
         if (historySkeleton) historySkeleton.style.display = 'none';
-        if (historyList) historyList.style.display = 'block';
+        if (historyList) historyList.style.display = 'flex';
         if (totalDisplay) totalDisplay.style.visibility = 'visible';
     }
     

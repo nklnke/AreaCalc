@@ -30,6 +30,16 @@
     --btn-primary: #2d7aff;
     --btn-primary-hover: #1a5fd9;
     --btn-primary-active: #1a5fd9;
+
+    /* Шкала отступов и радиусов — единый ритм */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+
+    --radius-card: 16px;
+    --radius-control: 14px;
+    --radius-pill: 999px;
 }
 
 /* Тёмная тема */
