@@ -6,6 +6,7 @@
     Theme.init();
     Precision.init();
     WindowControls.init();
+    Help.init();
     History.init();
     Edit.init();
     InputFilter.setupAll();

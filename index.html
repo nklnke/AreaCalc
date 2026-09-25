@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/total.css">
     <link rel="stylesheet" href="css/history.css">
     <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/help.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/export.css">
     <link rel="stylesheet" href="css/calculator.css">
@@ -78,6 +79,7 @@
                 <span class="titlebar-version" id="appVersion"></span>
             </div>
             <div class="titlebar-controls">
+                <button class="titlebar-btn" id="helpBtn" title="Справка о приложении">?</button>
                 <button class="titlebar-btn" id="winMinBtn" title="Свернуть">—</button>
                 <button class="titlebar-btn titlebar-close" id="winCloseBtn" title="Закрыть">✕</button>
             </div>
@@ -261,6 +263,51 @@
         </div>
     </div>
 
+    <!-- Окно справки о приложении -->
+    <div id="helpModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content help-modal-content">
+            <div class="help-modal-header">
+                <span class="help-modal-icon">📐</span>
+                <div class="help-modal-titles">
+                    <span class="help-modal-title">AreaCalc <span id="helpVersion"></span></span>
+                    <span class="help-modal-subtitle">Калькулятор площадей</span>
+                </div>
+            </div>
+            <div class="help-modal-body">
+                <div class="help-section">
+                    <div class="help-section-title">Как пользоваться</div>
+                    <ul class="help-list">
+                        <li>Введите ширину и высоту в <b>мм</b> (запятая тоже работает) и нажмите «Добавить». <b>Enter</b> в поле ширины переходит к высоте, <b>Enter</b> в поле высоты добавляет запись.</li>
+                        <li>Площадь считается как ширина × высота / 1 000 000 × множитель, результат — в <b>м²</b>.</li>
+                        <li>«Умножить последний» (×2–×5 или свой) меняет последнюю запись, а не добавляет новую.</li>
+                        <li>Кнопки <b>0.00 / 0.000 / 0.0000</b> меняют точность отображения.</li>
+                        <li>Калькулятор считает выражения вида <b>2.5*3+10</b>. Кнопка 🧮 в истории дописывает площадь записи в калькулятор.</li>
+                        <li>История: клик по записи — редактировать (размеры, множитель, заметка), 📋 — дублировать, ✕ — удалить.</li>
+                        <li>📤 — экспорт в CSV (для Excel) или JSON (резервная копия), 📥 — импорт из JSON.</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <div class="help-section-title">О приложении</div>
+                    <p class="help-text">AreaCalc считает площади прямоугольников и ведёт историю замеров. Данные хранятся локально на этом компьютере. При старте приложение автоматически проверяет обновления через GitHub Releases.</p>
+                </div>
+                <div class="help-section">
+                    <div class="help-section-title">Ссылки</div>
+                    <div class="help-links">
+                        <button class="help-link" data-url="https://github.com/nklnke/AreaCalc">
+                            <span class="help-link-icon">💻</span>
+                            <span class="help-link-text">Репозиторий на GitHub</span>
+                        </button>
+                        <button class="help-link" data-url="https://github.com/nklnke/AreaCalc/releases">
+                            <span class="help-link-icon">📦</span>
+                            <span class="help-link-text">Скачать новые версии</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-button" id="helpCloseBtn">Закрыть</button>
+        </div>
+    </div>
+
     <script src="js/utils.js"></script>
     <script src="shared/validate.js"></script>
     <script src="js/theme.js"></script>
@@ -274,5 +321,6 @@
     <script src="js/export.js"></script>
     <script src="js/calculator.js"></script>
     <script src="js/window-controls.js"></script>
+    <script src="js/help.js"></script>
     <script src="js/main.js"></script>
 </body>

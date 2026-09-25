@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs/promises');
 
@@ -182,6 +182,17 @@ ipcMain.handle('clear-data', async (event) => {
 // ===== Своя панель окна =====
 
 ipcMain.handle('get-version', () => app.getVersion());
+
+// Открытие внешних ссылок из справки: только GitHub-репозиторий проекта.
+// Прямой <a href> в песочнице увёл бы окно приложения на внешний сайт,
+// поэтому открываем через shell.openExternal с whitelist.
+ipcMain.handle('open-external', async (event, url) => {
+  if (typeof url !== 'string' || !/^https:\/\/github\.com\/nklnke\/AreaCalc(\/.*)?$/.test(url)) {
+    return false;
+  }
+  await shell.openExternal(url);
+  return true;
+});
 
 ipcMain.handle('window-minimize', () => {
   if (mainWindow) mainWindow.minimize();

@@ -1,0 +1,120 @@
+/* ===== Окно справки о приложении ===== */
+.help-modal-content {
+    max-width: 440px;
+    max-height: 82vh;
+    overflow-y: auto;
+    padding: 24px;
+    text-align: left;
+}
+
+.help-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.help-modal-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.help-modal-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.help-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.help-modal-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.help-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.help-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.help-list {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.help-list b {
+    font-weight: 700;
+}
+
+.help-text {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.help-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.help-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-count);
+    border: 1.5px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+.help-link:hover {
+    background: var(--bg-app);
+    border-color: var(--btn-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(45, 122, 255, 0.15);
+}
+
+.help-link:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.help-link-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.help-modal-content .modal-button {
+    display: block;
+    margin: 0 auto;
+}
