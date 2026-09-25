@@ -181,6 +181,8 @@ ipcMain.handle('clear-data', async (event) => {
 
 // ===== Своя панель окна =====
 
+ipcMain.handle('get-version', () => app.getVersion());
+
 ipcMain.handle('window-minimize', () => {
   if (mainWindow) mainWindow.minimize();
 });

@@ -36,6 +36,12 @@
     white-space: nowrap;
 }
 
+.titlebar-version {
+    font-weight: 400;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
 .titlebar-controls {
     display: flex;
     align-items: center;
